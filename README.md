@@ -1,6 +1,8 @@
 # Recommandation de contenus 🎶
 🎶 Application pour recommander des musiques en fonction des préférences de l'utilisateur à partir de celles des autres utilisateurs.
 
+Lien de la base de données utilisées : https://www.kaggle.com/rounakbanik/the-movies-dataset
+
 ## Technologies
 * Python :
 	* [Flask](https://flask.palletsprojects.com/en/2.0.x/) : Micro Framework web pour gérer les interactions entre le client et le serveur
@@ -9,6 +11,8 @@
 * Javascript :
 	* [Electron](https://www.electronjs.org) : Environnement pour développer des applications de bureau en Javascript (basé sur Chromium). Installer avec Vue CLI
 	* [Vue](https://vuejs.org) : Framework pour gérer l'interface en Javascript
+* [Sass](https://sass-lang.com) : Préprocesseur pour css
+
 
 ## Installation
 

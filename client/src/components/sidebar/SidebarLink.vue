@@ -1,0 +1,61 @@
+<template>
+	<li class="link-layout">
+		<router-link :to="to" class="link">
+			<slot />
+			<span>{{ text }}</span>
+		</router-link>
+	</li>
+</template>
+
+<script>
+export default {
+	props: {
+		to: { type: String, required: true },
+		text: { type: String, required: true }
+	},
+}
+</script>
+
+<style lang="scss">
+@import '../../assets/variables.scss';
+
+.link-layout {
+	display: block;
+	width: 100%;
+}
+
+.link {
+	position: relative;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+	padding: 12px;
+	width: 100%;
+	border-radius: 10px;
+	color: $font2-color;
+	margin-top: 5px;
+	svg {
+		margin-right: 20px;
+		width: 30px;
+		height: 30px;
+	}
+	span {
+		font-size: 16px;
+	}
+	&:hover {
+		background-color: $back2-color;
+	}
+	&.router-link-exact-active {
+		color: $font-color;
+		&::before {
+			position: absolute;
+			content: " ";
+			left: 0;
+			width: 5px;
+			height: 20px;
+			border-radius: 25px;
+			background-color: $main-color;
+		}
+	}
+}
+</style>

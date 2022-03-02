@@ -39,12 +39,12 @@ export default {
 	flex-direction: column;
 	height: 100%;
 	width: 275px;
-	padding: 0 5px;
 	.menu {
 		flex: 1 1 auto;
 		margin: 0;
 		padding: 0;
-		overflow: hidden scroll;
+		overflow-x: scroll;
+		overflow-y: hidden;
 		-ms-overflow-style: none;
 		scrollbar-width: none;
 		hr {

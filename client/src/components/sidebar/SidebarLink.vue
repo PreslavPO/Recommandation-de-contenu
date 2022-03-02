@@ -22,14 +22,13 @@ export default {
 .link-layout {
 	display: block;
 	width: 100%;
+	padding: 0 10px;
 }
-
 .link {
 	position: relative;
 	display: flex;
 	align-items: center;
-	overflow: hidden;
-	padding: 12px;
+	padding: 10px;
 	width: 100%;
 	border-radius: 10px;
 	color: $font2-color;

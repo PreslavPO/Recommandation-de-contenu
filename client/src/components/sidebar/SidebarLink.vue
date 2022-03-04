@@ -23,16 +23,16 @@ export default {
 	display: block;
 	width: 100%;
 	padding: 0 10px;
+	margin-top: 10px;
 }
 .link {
 	position: relative;
 	display: flex;
 	align-items: center;
-	padding: 10px;
+	padding: 15px;
 	width: 100%;
 	border-radius: 10px;
 	color: $font2-color;
-	margin-top: 5px;
 	svg {
 		margin-right: 20px;
 		width: 30px;

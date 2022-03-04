@@ -43,8 +43,8 @@ export default {
 		flex: 1 1 auto;
 		margin: 0;
 		padding: 0;
-		overflow-x: scroll;
-		overflow-y: hidden;
+		overflow-x: hidden;
+		overflow-y: scroll;
 		-ms-overflow-style: none;
 		scrollbar-width: none;
 		hr {

@@ -39,6 +39,7 @@ export default {
 	flex-direction: column;
 	height: 100%;
 	width: 275px;
+	min-width: 275px;
 	.menu {
 		flex: 1 1 auto;
 		margin: 0;

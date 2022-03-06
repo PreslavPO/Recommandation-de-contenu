@@ -1,6 +1,9 @@
 <template>
 	<div class="home">
-		<img alt="Vue logo" src="../assets/logo.png">
+		<div class="logo__wrapper">
+			<img alt="TheMoviesualizer logo" src="../assets/logo.svg">
+			<h1>The<span>Movie</span>sualizer</h1>
+		</div>
 		<HelloWorld :msg="title" />
 	</div>
 </template>
@@ -30,4 +33,24 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../assets/variables.scss";
+
+.logo__wrapper {
+	display: flex;
+	flex-direction: column;
+	margin: auto;
+	margin-top: 25px;
+	width: fit-content;
+	img {
+		margin-left: 78px;
+		width: 115px;
+	}
+	h1 {
+		margin: 0;
+		font-size: 40px;
+		span {
+			color: $main-color;
+		}
+	}
+}
 </style>

@@ -86,6 +86,7 @@ body, #app, #main {
 		align-items: stretch;
 		background-color: $back2-color;
 		border-radius: 20px 0 0 0;
+		min-width: 800px;
 		&__wrapper {
 			position: absolute;
 			top: 0;

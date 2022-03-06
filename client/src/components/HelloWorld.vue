@@ -1,6 +1,6 @@
 <template>
 	<div class="hello">
-		<h1>{{ msg }}</h1>
+		<h2>{{ msg }}</h2>
 		<h3>Movies</h3>
 		<ul>
 			<li><router-link to="/movie/127564">Interstellar</router-link></li>

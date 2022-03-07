@@ -1,10 +1,10 @@
 <template>
 	<div class="background">
-		<img :src="background_path" alt="background of {title}">
+		<img :src="background_path" :alt="'background of ' + title">
 	</div>
 	<div class="header">
 		<div class="header__poster">
-			<img :src="poster_path" alt="poster of {title}">
+			<img :src="poster_path" :alt="'poster of ' + title">
 		</div>
 		<div class="header__info">
 			<h2>{{ title }}</h2>
@@ -18,24 +18,8 @@
 			</div>
 			<p class="overview-text">{{ overview }}</p>
 			<div class="score-list">
-				<div class="score score--global">
-					<div class="score__icon">
-						<StarFillIcon />
-					</div>
-					<div class="score__details">
-						<div class="details__title">{{ score }}<span>/10</span></div>
-						<div class="details__subtitle">{{ vote_count }} reviews</div>
-					</div>
-				</div>
-				<div class="score score--user">
-					<div class="score__icon">
-						<StarFillIcon />
-					</div>
-					<div class="score__details">
-						<div class="details__title">9</div>
-						<div class="details__subtitle">Your rating</div>
-					</div>
-				</div>
+				<RatingStar :is-global="true" :score="8.2" :vote-count="16234" />
+				<RatingStar :is-global="false" :score="9" />
 			</div>
 		</div>
 	</div>
@@ -109,13 +93,13 @@
 </template>
 
 <script>
-import StarFillIcon from "@/components/icons/StarFillIcon.vue";
+import RatingStar from "@/components/RatingStar.vue";
 import { useRoute } from "vue-router";
 
 export default {
 	name: "Movie",
 	components: {
-		StarFillIcon,
+		RatingStar,
 	},
 	data() {
 		return {
@@ -185,7 +169,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../assets/variables.scss";
+@import "@/assets/variables.scss";
 
 $element-space: 75px;
 .background {
@@ -253,51 +237,6 @@ $poster-width: 350px;
 			display: flex;
 			grid-gap: 30px;
 			margin-top: 30px;
-		}
-	}
-}
-
-.score {
-	display: flex;
-	&__icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 50px;
-		height: 50px;
-		min-width: 50px;
-		min-height: 50px;
-		border-radius: 50%;
-		svg {
-			color: $back2-color;
-		}
-	}
-	&__details {
-		margin-left: 15px;
-		.details__title {
-			font-size: 32px;
-			font-weight: 600;
-			span {
-				font-size: 16px;
-				color: $font2-color;
-			}
-		}
-		.details__subtitle {
-			font-size: 16px;
-			color: $font2-color;
-		}
-	}
-	&--global {
-		.score__icon {
-			background-color: $main-color;
-		}
-	}
-	&--user {
-		.score__icon {
-			background-color: $back3-color;
-			svg {
-				color: $font-color;
-			}
 		}
 	}
 }

@@ -18,9 +18,9 @@ export default {
 </script>
 
 <style lang="scss">
-@import './assets/fonts.scss';
-@import './assets/normalize.scss';
-@import './assets/variables.scss';
+@import '@/assets/fonts.scss';
+@import '@/assets/normalize.scss';
+@import '@/assets/variables.scss';
 
 * {
 	box-sizing: border-box;
@@ -55,6 +55,9 @@ img, table, td, blockquote, code, pre, textarea, input, video {
 a {
 	color: inherit;
 	text-decoration: none;
+	&:hover {
+		color: $main-color;
+	}
 }
 a img {
 	border: 0;

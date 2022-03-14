@@ -53,10 +53,11 @@ export default {
 	flex-direction: column;
 	width: 150px;
 	&__poster {
-		border-radius: 30px;
+		border-radius: 20px;
 		overflow: hidden;
 	}
 	&__info {
+		margin-top: 5px;
 		.smallCard__subtitle {
 			display: flex;
 			justify-content: space-between;

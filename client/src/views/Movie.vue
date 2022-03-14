@@ -18,7 +18,7 @@
 			</div>
 			<p class="overview-text">{{ overview }}</p>
 			<div class="score-list">
-				<RatingStar :is-global="true" :score="8.2" :vote-count="16234" />
+				<RatingStar :is-global="true" :score="score" :vote-count="vote_count" />
 				<RatingStar :is-global="false" :score="9" />
 			</div>
 		</div>
@@ -95,6 +95,8 @@
 <script>
 import RatingStar from "@/components/RatingStar.vue";
 import { useRoute } from "vue-router";
+import axios from "/config/axios";
+import { warn } from '@vue/runtime-core';
 
 export default {
 	name: "Movie",
@@ -141,28 +143,44 @@ export default {
 		document.title = `${route.params.id} — TheMoviesualizer`;
 		this.id = route.params.id;
 
-		// Convert date
-		this.date = this.date.toLocaleDateString();
+		axios
+			.get(`/api/movie/${this.id}`)
+			.then(res => JSON.parse(res.data.replace(/\bNaN\b/g, "null"))) // TODO : Gérer NaN côté serveur
+			.then(data => {
+				this.title = data.title;
+				this.poster_path = data.poster_path;
+				this.score = data.vote_average;
+				this.vote_count = data.vote_count;
+				this.duration = data.runtime;
+				this.overview = data.overview;
+				this.date = new Date(data.release_date);
 
-		// Convert duration
-		this.duration = Math.floor(this.duration/60) + "h " + this.duration%60 + "mins";
+				console.table(data)
 
-		// Images Path
-		const base_url = "https://image.tmdb.org/t/p";
-		this.poster_path = `${base_url}/w500/1pnigkWWy8W032o9TKDneBa3eVK.jpg`;
-		this.background_path = `${base_url}/original/xJHokMbljvjADYdit5fK5VQsXEG.jpg`;
-		this.person_crew.forEach(p => {
-			if (p.profile_path)
-				p.profile_path = base_url + "/w500/" + p.profile_path;
-			else
-				p.profile_path = "/no-image.png";
-		});
-		this.person_cast.forEach(p => {
-			if (p.profile_path)
-				p.profile_path = base_url + "/w500/" + p.profile_path;
-			else
-				p.profile_path = "/no-image.png";
-		});
+				// Convert date
+				this.date = this.date.toLocaleDateString();
+
+				// Convert duration
+				this.duration = Math.floor(this.duration/60) + "h " + this.duration%60 + "mins";
+
+				// Images Path
+				const base_url = "https://image.tmdb.org/t/p";
+				this.poster_path = `${base_url}/w500${this.poster_path}`;
+				this.background_path = `${base_url}/original/xJHokMbljvjADYdit5fK5VQsXEG.jpg`;
+				this.person_crew.forEach(p => {
+					if (p.profile_path)
+						p.profile_path = base_url + "/w500/" + p.profile_path;
+					else
+						p.profile_path = "/no-image.png";
+				});
+				this.person_cast.forEach(p => {
+					if (p.profile_path)
+						p.profile_path = base_url + "/w500/" + p.profile_path;
+					else
+						p.profile_path = "/no-image.png";
+				});
+			})
+			.catch(err => console.error(err))
 		
 	},
 }

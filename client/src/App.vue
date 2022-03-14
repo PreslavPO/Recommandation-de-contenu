@@ -55,9 +55,6 @@ img, table, td, blockquote, code, pre, textarea, input, video {
 a {
 	color: inherit;
 	text-decoration: none;
-	&:hover {
-		color: $main-color;
-	}
 }
 a img {
 	border: 0;

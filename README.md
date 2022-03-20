@@ -1,5 +1,5 @@
-# Recommandation de contenus 🎶
-🎶 Application pour recommander des musiques en fonction des préférences de l'utilisateur à partir de celles des autres utilisateurs.
+# Recommandation de contenus 🎬
+🎬 Application pour recommander des musiques en fonction des préférences de l'utilisateur à partir de celles des autres utilisateurs.
 
 Lien de la base de données utilisées : https://www.kaggle.com/rounakbanik/the-movies-dataset
 
@@ -52,4 +52,23 @@ L'adresse du client est `localhost:8080`
 Pour lancer l'application avec electron :
 ```
 npm run electron:serve
+```
+
+### Import data in mongoDB
+
+Go to `./server/dataToDb` directory and install dependencies :
+```bash
+npm install
+```
+
+Create a database `<NameDB>` and a collection `movies` beforehand, the collection name is `movies`. Replace `<NameDB>`, `<Username>`, `<Password>` in the commands below
+
+Import csv to mongoDB :
+```properties
+mongoimport --db <NameDB> --collection movies --type csv --file ./server/data/movies_metadata.csv --headerline --uri mongodb+srv://<Username>:<Password>@cluster0.xyttr.mongodb.net/
+```
+
+Convert mongoDB data :
+```properties
+mongosh mongodb+srv://<Username>:<Password>@cluster0.xyttr.mongodb.net/<NameDB> mongodb-import.js
 ```

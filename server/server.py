@@ -1,28 +1,42 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
-from extract_csv import get_dataframe_files, dataframe_to_dict
+from pymongo import MongoClient
+from dotenv import load_dotenv
+from bson import json_util
+import json
+import os
 
 app = Flask(__name__)
 
-# Esquisse de l'implémentation de la bdd
-# app.config ["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
-# db = SQLAlchemy(app)
-
-# class movie(db.Model):
-# 	id = db.Column(db.Integer, primary_key = True)
-# 	name = db.Column(db.String(255), nullable=False)
-
-# db.create_all()
-
-# Activer CORS
+# Enable CORS
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:8080"}})
 
-@app.route("/api/movie/<int:id>", methods=['GET'])
-def movie(id):
-	movies = get_dataframe_files()
-	movieFinded = movies.loc[movies["id"] == str(id)] # L'id est stocké comme un string
-	return jsonify(dataframe_to_dict(movieFinded)[0])
+# Environment variables
+load_dotenv()
+dbUsername = os.environ.get("DB_USERNAME")
+dbPassword = os.environ.get("DB_PASSWORD")
+dbName = os.environ.get("DB_NAME")
+
+# Database
+load_dotenv()
+
+cluster = MongoClient(
+    "mongodb+srv://%s:%s@cluster0.xyttr.mongodb.net/%s" % (dbUsername, dbPassword, dbName),
+	tls=True,
+    tlsAllowInvalidCertificates=True
+)
+db = cluster[dbName]
+
+# Routes
+@app.route("/api/movie/<int:movieId>", methods=["GET"])
+def movie(movieId):
+	data = db.movies.find_one({ "id": movieId })
+	return json.loads(json_util.dumps(data))
+
+@app.route("/api/movie/<int:movieId>/credits", methods=["GET"])
+def movieCredits(movieId):
+	data = db.credits.find_one({ "id": movieId })
+	return json.loads(json_util.dumps(data))
 
 if __name__ == "__main__":
 	app.run(debug=True)

@@ -145,7 +145,7 @@ export default {
 
 		axios
 			.get(`/api/movie/${this.id}`)
-			.then(res => JSON.parse(res.data.replace(/\bNaN\b/g, "null"))) // TODO : Gérer NaN côté serveur
+			.then(res => res.data)
 			.then(data => {
 				this.title = data.title;
 				this.poster_path = data.poster_path;
@@ -154,8 +154,6 @@ export default {
 				this.duration = data.runtime;
 				this.overview = data.overview;
 				this.date = new Date(data.release_date);
-
-				console.table(data)
 
 				// Convert date
 				this.date = this.date.toLocaleDateString();

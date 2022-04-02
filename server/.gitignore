@@ -1,4 +1,4 @@
 venv
 data
 __pycache__
-src/weighted_rating/log.py
+.env

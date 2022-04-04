@@ -136,12 +136,27 @@ export default {
 		/** @return {[{id: number, name: String, job: String, profile_path: String}]} */
 		getPeopleByJob(list, job) {
 			return list.filter(person => person.job === job);
+		},
+		/** @return {string} */
+		getThumbnail(name, imgDefault, c) {
+			let image_url = "https://image.tmdb.org/t/p/w500" + name;
+			let image = new Image();
+
+			image.onload = function() {
+				c(image_url);
+			}
+			image.onerror = function() {
+				c(imgDefault);
+			}
+
+			image.src = image_url;
 		}
 	},
 	mounted() {
 		const route = useRoute();
 		document.title = `${route.params.id} — TheMoviesualizer`;
 		this.id = route.params.id;
+		const base_url = "https://image.tmdb.org/t/p";
 
 		axios
 			.get(`/api/movie/${this.id}`)
@@ -162,24 +177,39 @@ export default {
 				this.duration = Math.floor(this.duration/60) + "h " + this.duration%60 + "mins";
 
 				// Images Path
-				const base_url = "https://image.tmdb.org/t/p";
 				this.poster_path = `${base_url}/w500${this.poster_path}`;
 				this.background_path = `${base_url}/original/xJHokMbljvjADYdit5fK5VQsXEG.jpg`;
-				this.person_crew.forEach(p => {
-					if (p.profile_path)
-						p.profile_path = base_url + "/w500/" + p.profile_path;
-					else
-						p.profile_path = "/no-image.png";
-				});
-				this.person_cast.forEach(p => {
-					if (p.profile_path)
-						p.profile_path = base_url + "/w500/" + p.profile_path;
-					else
-						p.profile_path = "/no-image.png";
-				});
+
+				this.getThumbnail(
+					this.poster_path,
+					"/no-poster.png",
+					(url) => { this.poster_path = url; }
+				);
 			})
 			.catch(err => console.error(err))
 		
+		axios
+			.get(`/api/movie/${this.id}/credits`)
+			.then(res => res.data)
+			.then(data => {
+				this.person_cast = data.cast;
+				this.person_crew = data.crew;
+
+				this.person_crew.forEach(p => {
+					this.getThumbnail(
+						p.profile_path,
+						"/no-image.png",
+						(url) => { p.profile_path = url; }
+					);
+				});
+				this.person_cast.forEach(p => {
+					this.getThumbnail(
+						p.profile_path,
+						"/no-image.png",
+						(url) => { p.profile_path = url; }
+					);
+				});
+			})
 	},
 }
 </script>

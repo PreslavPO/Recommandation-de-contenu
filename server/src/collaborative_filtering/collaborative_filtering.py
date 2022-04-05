@@ -7,6 +7,7 @@ from surprise.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
+import pickle
 
 movies_metadata = pd.read_csv("../../Data/movies_metadata.csv", low_memory=False)
 ratings = pd.read_csv("../../Data/ratings_small.csv", low_memory=False)
@@ -58,15 +59,27 @@ algo.fit(trainset)
 
 # trainset.build_anti_testset() renvoie une liste de tuples qui contient tous les films qui n'ont pas été
 # notés pour chaque user, sous la forme : (user_id, film_id, fill)
-testset = trainset.build_anti_testset()
+#testset = trainset.build_anti_testset()
 
 # algo.test(testset) estime avec l'algorithme toutes les notes vides du testset
 # prend beaucoup de temps
-predictions = algo.test(testset)
+#predictions = algo.test(testset)
 
-#Fonction qui prend en paramètres les prédictions, le nombre de films qu'on veut avoir et l'id de l'user
-#Retourne un tableau avec les nb_films les mieux notés pour l'user selon l'algo (on retourne le movieId du film et sa note)
-def films_mieux_notes(predictions, nb_films, user_id):
+# Enregistre avec pickle le modèle
+with open('../../Data/model.pkl', 'wb') as f:
+    pickle.dump(algo, f)
+
+# Pour récupérer le modèle depuis le fichier model.pkl :
+# with open('../../Data/model.pkl', 'rb') as f:
+#    algo_copie = pickle.load(f)
+
+# Test que ça fonctionne bien
+# print(algo_copie.predict(2, 123).est)
+
+
+#Fonction qui prend en paramètres les prédictions et le nombre de films qu'on veut avoir
+#Retourne un tableau avec les nb_films les mieux notés pour chaque user selon l'algo (on retourne le movieId du film et sa note)
+def predictAll(predictions, nb_films):
 
     # defaultdict(list) permet de créer un dictionnaire qui va stocker les films et les notes associées
     # à un user donné
@@ -74,10 +87,8 @@ def films_mieux_notes(predictions, nb_films, user_id):
     # il va créer la clé et lui donner une liste vide
     films = defaultdict(list)
 
-    # On parcourt les prédictions et on ne garde dans le tableau que les prédictions pour l'utilisateur choisi
+    # On parcourt les prédictions et on ne garde dans le tableau que les prédictions
     for uid, film_id, _, note_estimee, _ in predictions:
-        #On peut enlever le if si on veut toutes les prédictions pour tous les users
-        if uid == user_id:
             films[uid].append((film_id, note_estimee))
 
     # Trie le tableau et récupère les nb_films premiers
@@ -85,14 +96,25 @@ def films_mieux_notes(predictions, nb_films, user_id):
         note_estimee.sort(key=lambda x: x[1], reverse=True)
         films[uid] = note_estimee[:nb_films]
 
-    return films[user_id]
+    return films
 
-predicted = films_mieux_notes(predictions, 5, 26)
-# Renvoie quelque chose dans le style :
-# [('123', 3.0), ('456', 4.0), ('789', 2.0), ('101', 3.0), ('102', 1.0)]
+# Renvoie les id des nb_films films les mieux notés pour l'user user_id selon notre algo
+def films_mieux_notes_par_l_user(algo, trainset, user_id, nb_films):
+    pred = []
+    # Predit les films
+    for i in trainset.all_items():
+        pred.append((i, algo.predict(user_id, i).est))
+
+    # trie les predictions par ordre décroissant
+    pred = sorted(pred, key=lambda x: x[1], reverse=True)
+
+    # garde les 5 premiers
+    pred = pred[:nb_films]
+    return pred
+
+predicted = films_mieux_notes_par_l_user(algo, trainset, 26, 5)
 
 # Pour récupérer les noms des films :
-
 def recup_titres(predicted):
     recommanded_films = []
     for i,j in predicted:
@@ -118,7 +140,7 @@ print(recup_titres(predicted))
 # RMSE = Root Mean Square Error
 # RMSE prédit les notes pour des paires user-film qui ont déjà une note et compare ces notes avec les notes réelles
 # Plus on s'approche de 1 mieux c'est
-print("RMSE:", accuracy.rmse(predictions))
+#print("RMSE:", accuracy.rmse(predictions))
 
 
 ##########################################################

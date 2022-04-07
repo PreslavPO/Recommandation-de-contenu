@@ -19,7 +19,7 @@
 			<p class="overview-text">{{ overview }}</p>
 			<div class="score-list">
 				<RatingStar :is-global="true" :score="score" :vote-count="vote_count" />
-				<RatingStar :is-global="false" :score="9" />
+				<RatingStar :is-global="false" :score="userScore" />
 			</div>
 		</div>
 	</div>
@@ -109,23 +109,20 @@ export default {
 			title: "Interstellar",
 			poster_path: "",
 			background_path: "",
-			date: new Date(),
-			duration: 171,
-			overview: "Laboris laborum ex ullamco labore fugiat tempor nisi veniam consectetur. Sint nulla ut tempor ut cillum in qui eu labore do irure eiusmod. Sunt nostrud labore consectetur sint occaecat elit consectetur do.",
-			score: 8.2,
-			vote_count: 16234,
+			date: "xx/xx/xxxx",
+			duration: "x mins",
+			overview: "Loading ...",
+			score: -1,
+			vote_count: -1,
 			genres: [{id: 35, name: "Sci-Fi"}, {id: 18, name: "Comedy"}],
 			person_crew: [
-				{id: 12, name: "Christopher Nolan", job: "Director", profile_path: null},
-				{id: 12, name: "Christopher Nolan", job: "Writer", profile_path: null},
-				{id: 25, name: "Jonathan Nolan", job: "Writer", profile_path: null},
+				{id: 12, name: "Loading ...", job: "Director", profile_path: "/no-image.png"},
+				{id: 12, name: "Loading ...", job: "Writer", profile_path: "/no-image.png"},
 			],
 			person_cast: [
-				{id: 125, order: 0, character: "Joseph 'Coop' Cooper", name: "Matthew McConaughey", profile_path: "wJiGedOCZhwMx9DezY8uwbNxmAY.jpg"},
-				{id: 312, order: 1, character: "Dr. Amelia Brand", name: "Anne Hathaway", profile_path: "tLelKoPNiyJCSEtQTz1FGv4TLGc.jpg"},
-				{id: 78, order: 2, character: "Murphy 'Murph' Cooper", name: "Jessica Chastain", profile_path: "lodMzLKSdrPcBry6TdoDsMN3Vge.jpg"},
-				{id: 48, order: 3, character: "Donald", name: "John Lithgow", profile_path: "8Y1sjBdnVR483S8PrnAQzlESwhx.jpg"},
+				{id: 125, order: 0, character: "---", name: "Loading ...", profile_path: "/no-image.png"},
 			],
+			userScore: -1,
 		}
 	},
 	methods: {
@@ -243,6 +240,10 @@ $poster-width: 350px;
 		overflow: hidden;
 		border-radius: 20px;
 		width: $poster-width;
+		img {
+			display: block;
+			width: 100%;
+		}
 	}
 	&__info {
 		margin-left: $poster-width + 45px;

@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 
 # Enable CORS
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:8080"}})
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Environment variables
 load_dotenv()

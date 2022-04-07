@@ -4,8 +4,15 @@
 			<StarFillIcon />
 		</div>
 		<div class="score__details">
-			<div class="details__title">{{ score }}<span v-if="isGlobal">/10</span></div>
-			<div v-if="isGlobal" class="details__subtitle">{{ voteCount }} reviews</div>
+			<div class="details__title">
+				<template v-if="score != -1">{{ score }}</template>
+				<template v-else>-</template>
+				<span v-if="isGlobal">/10</span>
+			</div>
+			<div v-if="isGlobal" class="details__subtitle">
+				<template v-if="voteCount != -1">{{ voteCount }} reviews</template>
+				<template v-else>- reviews</template>
+			</div>
 			<div v-else class="details__subtitle">Your review</div>
 		</div>
 	</div>

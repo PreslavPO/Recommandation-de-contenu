@@ -96,7 +96,6 @@
 import RatingStar from "@/components/RatingStar.vue";
 import { useRoute } from "vue-router";
 import axios from "/config/axios";
-import { warn } from '@vue/runtime-core';
 
 export default {
 	name: "Movie",
@@ -107,10 +106,10 @@ export default {
 		return {
 			id: "",
 			title: "Interstellar",
-			poster_path: "",
+			poster_path: "/no-poster.png",
 			background_path: "",
-			date: "xx/xx/xxxx",
-			duration: "x mins",
+			date: "--/--/----",
+			duration: "- mins",
 			overview: "Loading ...",
 			score: -1,
 			vote_count: -1,

@@ -16,7 +16,7 @@ const setCharAt = (str, index, char) => {
  * @returns String in the format minutes:seconds (e.g. 12:55)
  */
 const secondsToString = (totalSeconds) => {
-	const minutes = ~~((totalSeconds % 3600) / 60); //~~ <=> Math.floor
+	const minutes = ~~(totalSeconds / 60); //~~ <=> Math.floor
 	const seconds = ~~totalSeconds % 60;
 	return ((minutes > 0) ? minutes + ":" : "") + ((minutes >= 1 && seconds < 10) ? "0" : "") + seconds;
 }

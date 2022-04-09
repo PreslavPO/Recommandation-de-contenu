@@ -31,12 +31,16 @@ db = cluster[dbName]
 @app.route("/api/movie/<int:movieId>", methods=["GET"])
 def movie(movieId):
 	data = db.movies.find_one({ "id": movieId })
-	return json.loads(json_util.dumps(data))
+	if (data != None):
+		return json.loads(json_util.dumps(data)), 200
+	return { "msg": "Movie id not found" }, 404
 
 @app.route("/api/movie/<int:movieId>/credits", methods=["GET"])
 def movieCredits(movieId):
 	data = db.credits.find_one({ "id": movieId })
-	return json.loads(json_util.dumps(data))
+	if (data != None):
+		return json.loads(json_util.dumps(data)), 200
+	return { "msg": "Movie id not found" }, 404
 
 if __name__ == "__main__":
 	app.run(debug=True)

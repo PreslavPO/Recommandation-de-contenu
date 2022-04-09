@@ -1,6 +1,6 @@
 <template>
 	<div class="background">
-		<img :src="background_path" :alt="'background of ' + title">
+		<img v-if="background_path" :src="background_path" :alt="'background of ' + title">
 	</div>
 	<div class="header">
 		<div class="header__poster">
@@ -105,7 +105,7 @@ export default {
 	data() {
 		return {
 			id: "",
-			title: "Interstellar",
+			title: "Loading ...",
 			poster_path: "/no-poster.png",
 			background_path: "",
 			date: "--/--/----",
@@ -113,7 +113,7 @@ export default {
 			overview: "Loading ...",
 			score: -1,
 			vote_count: -1,
-			genres: [{id: 35, name: "Sci-Fi"}, {id: 18, name: "Comedy"}],
+			genres: [{id: -1, name: "Loading ..."}],
 			person_crew: [
 				{id: 12, name: "Loading ...", job: "Director", profile_path: "/no-image.png"},
 				{id: 12, name: "Loading ...", job: "Writer", profile_path: "/no-image.png"},
@@ -148,64 +148,69 @@ export default {
 			image.src = image_url;
 		}
 	},
-	mounted() {
+	async mounted() {
 		const route = useRoute();
 		document.title = `${route.params.id} — TheMoviesualizer`;
 		this.id = route.params.id;
 		const base_url = "https://image.tmdb.org/t/p";
 
-		axios
-			.get(`/api/movie/${this.id}`)
-			.then(res => res.data)
-			.then(data => {
-				this.title = data.title;
-				this.poster_path = data.poster_path;
-				this.score = data.vote_average;
-				this.vote_count = data.vote_count;
-				this.duration = data.runtime;
-				this.overview = data.overview;
-				this.date = new Date(data.release_date);
+		try {
+			let resMovie = await axios.get(`/api/movie/${this.id}`);
+			// TODO : Si 404 on affiche rien, sinon on affiche tout
+			// Actuellement cela va dans le catch peu importe l'erreur (normal de pas trouver le plan d'arrière plan)
+			// Exemple id = 88844
+			let dataMovie = resMovie.data;
+			
+			this.title = dataMovie.title;
+			this.poster_path = dataMovie.poster_path;
+			this.background_path = dataMovie.backdrop_path;
+			this.score = dataMovie.vote_average;
+			this.vote_count = dataMovie.vote_count;
+			this.duration = dataMovie.runtime;
+			this.overview = dataMovie.overview;
+			this.date = new Date(dataMovie.release_date);
+			this.genres = dataMovie.genres;
 
-				// Convert date
-				this.date = this.date.toLocaleDateString();
+			// Convert date
+			this.date = this.date.toLocaleDateString();
 
-				// Convert duration
-				this.duration = Math.floor(this.duration/60) + "h " + this.duration%60 + "mins";
+			// Convert duration
+			this.duration = Math.floor(this.duration/60) + "h " + this.duration%60 + "mins";
 
-				// Images Path
-				this.poster_path = `${base_url}/w500${this.poster_path}`;
-				this.background_path = `${base_url}/original/xJHokMbljvjADYdit5fK5VQsXEG.jpg`;
+			// Images Path
+			this.poster_path = `${base_url}/w500${this.poster_path}`;
+			if (this.background_path)
+				this.background_path = `${base_url}/original${this.background_path}`;
 
+			this.getThumbnail(
+				this.poster_path,
+				"/no-poster.png",
+				(url) => { this.poster_path = url; }
+			);
+			
+			let resCredits = axios.get(`/api/movie/${this.id}/credits`)
+			let dataCredits = resCredits.data;
+			this.person_cast = dataCredits.cast;
+			this.person_crew = dataCredits.crew;
+
+			this.person_crew.forEach(p => {
 				this.getThumbnail(
-					this.poster_path,
-					"/no-poster.png",
-					(url) => { this.poster_path = url; }
+					p.profile_path,
+					"/no-image.png",
+					(url) => { p.profile_path = url; }
 				);
-			})
-			.catch(err => console.error(err))
-		
-		axios
-			.get(`/api/movie/${this.id}/credits`)
-			.then(res => res.data)
-			.then(data => {
-				this.person_cast = data.cast;
-				this.person_crew = data.crew;
-
-				this.person_crew.forEach(p => {
-					this.getThumbnail(
-						p.profile_path,
-						"/no-image.png",
-						(url) => { p.profile_path = url; }
-					);
-				});
-				this.person_cast.forEach(p => {
-					this.getThumbnail(
-						p.profile_path,
-						"/no-image.png",
-						(url) => { p.profile_path = url; }
-					);
-				});
-			})
+			});
+			this.person_cast.forEach(p => {
+				this.getThumbnail(
+					p.profile_path,
+					"/no-image.png",
+					(url) => { p.profile_path = url; }
+				);
+			});
+		}
+		catch (error) {
+			console.error(error.response);
+		}
 	},
 }
 </script>

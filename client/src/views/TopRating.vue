@@ -3,21 +3,37 @@
 		<h1>Top Rating</h1>
 		<span>Which is the best rated movie?</span>
 		<ul class="movie-list">
-			<li class="movie-item" v-for="i in 10" :key="i">
-				<BigCard />
-			</li>
+			<Suspense>
+				<template #default>
+					<TopList :page="page" />
+				</template>
+				<template #fallback>
+					Loading...
+				</template>
+			</Suspense>
 		</ul>
 	</div>
 </template>
 
 <script>
-import BigCard from "@/components/movieCards/BigCard.vue";
+import { useRoute } from 'vue-router'
+import TopList from "@/components/topRating/TopList.vue";
 
 export default {
 	name: "TopRating",
 	components: {
-		BigCard,
+		TopList,
 	},
+	data() {
+		return {
+			page: 1,
+		};
+	},
+	beforeMount() {
+		const route = useRoute()
+		if (route.query.page)
+			this.page = parseInt(route.query.page);
+	}
 }
 </script>
 

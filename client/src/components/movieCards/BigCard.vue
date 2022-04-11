@@ -1,24 +1,24 @@
 <template>
 	<div class="bigCard">
-		<router-link :to="'/movie/' + id" class="bigCard__poster">
-			<img :src="poster_path" :alt="'poster of ' + title">
+		<router-link :to="'/movie/' + movie.id" class="bigCard__poster">
+			<img :src="movie.poster_path" :alt="'poster of ' + movie.title">
 		</router-link>
 		<div class="bigCard__info">
-			<router-link :to="'/movie/' + id" class="bigCard__link--title">
-				<h3>{{ title }}</h3>
+			<router-link :to="'/movie/' + movie.id" class="bigCard__link--title">
+				<h3>{{ movie.title }}</h3>
 			</router-link>
 			<div class="subtitle">
-				<span class="subtitle__text">{{ date }} — {{ duration }}</span>
+				<span class="subtitle__text">{{ movie.release_date }} — {{ movie.runtime }}</span>
 				<ul class="subtitle__genre">
-					<li v-for="genre in genres" :key="genre.id">
+					<li v-for="genre in movie.genres" :key="genre.id">
 						{{ genre.name }}
 					</li>
 				</ul>
 			</div>
-			<p class="overview-text">{{ overview }}</p>
+			<p class="overview-text">{{ movie.overview }}</p>
 			<div class="score-list">
-				<RatingStar :is-global="true" :score="8.2" :vote-count="16234" />
-				<RatingStar :is-global="false" :score="9" />
+				<RatingStar :is-global="true" :score="movie.vote_average" :vote-count="movie.vote_count" />
+				<RatingStar :is-global="false" :score="-1" />
 			</div>
 		</div>
 	</div>
@@ -29,31 +29,54 @@ import RatingStar from "@/components/RatingStar.vue";
 
 export default {
 	name: "BigCard",
+	props: {
+		movie: {
+			id: Number,
+			title: String,
+			poster_path: String,
+			release_date: Date,
+			runtime: Number,
+			overview: String,
+			vote_average: Number,
+			vote_count: Number,
+			genres: Array,
+		}
+	},
 	components: {
 		RatingStar,
 	},
 	data() {
 		return {
-			id: "183",
-			title: "Interstellar",
-			poster_path: "",
-			date: new Date(),
-			duration: 171,
-			overview: "Laboris laborum ex ullamco labore fugiat tempor nisi veniam consectetur. Sint nulla ut tempor ut cillum in qui eu labore do irure eiusmod. Sunt nostrud labore consectetur sint occaecat elit consectetur do.",
-			score: 8.2,
-			genres: [{id: 35, name: "Sci-Fi"}, {id: 18, name: "Comedy"}],
 		}
 	},
-	mounted() {
+	async created() {
+		const base_url = "https://image.tmdb.org/t/p";
+
+		/**
+		 * Get image if correct path or else get default image
+		 */
+		const getThumbnail = (name, imgDefault) => {
+			return new Promise((resolve, reject) => {
+				let imageUrl = `${base_url}/w500${name}`;
+				let image = new Image();
+
+				image.onload = () => resolve(imageUrl);
+				image.onerror = () => resolve(imgDefault);
+				image.src = imageUrl;
+			});
+		}
+		
 		// Convert date
-		this.date = this.date.toLocaleDateString();
+		this.movie.release_date = new Date(this.movie.release_date).toLocaleDateString();
 
 		// Convert duration
-		this.duration = Math.floor(this.duration/60) + "h " + this.duration%60 + "mins";
+		this.movie.runtime = `${~~(this.movie.runtime/60)}h ${this.movie.runtime%60}mins`;
 
 		// Images Path
-		const base_url = "https://image.tmdb.org/t/p";
-		this.poster_path = `${base_url}/w500/1pnigkWWy8W032o9TKDneBa3eVK.jpg`;
+		this.movie.poster_path = await getThumbnail(
+			this.movie.poster_path,
+			"/no-poster.png"
+		);
 	},
 }
 </script>
@@ -68,6 +91,10 @@ export default {
 		border-radius: 20px;
 		width: 200px;
 		min-width: 200px;
+		img {
+			display: block;
+			width: 100%;
+		}
 	}
 	&__info {
 		margin-left: 30px;

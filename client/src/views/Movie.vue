@@ -1,216 +1,144 @@
 <template>
-	<div class="background">
-		<img :src="background_path" :alt="'background of ' + title">
-	</div>
-	<div class="header">
-		<div class="header__poster">
-			<img :src="poster_path" :alt="'poster of ' + title">
-		</div>
-		<div class="header__info">
-			<h2>{{ title }}</h2>
-			<div class="subtitle">
-				<span class="subtitle__text">{{ date }} — {{ duration }}</span>
-				<ul class="subtitle__genre">
-					<li v-for="genre in genres" :key="genre.id">
-						{{ genre.name }}
-					</li>
-				</ul>
-			</div>
-			<p class="overview-text">{{ overview }}</p>
-			<div class="score-list">
-				<RatingStar :is-global="true" :score="score" :vote-count="vote_count" />
-				<RatingStar :is-global="false" :score="9" />
-			</div>
-		</div>
-	</div>
-	<div class="cast">
-		<div class="first-column">
-			<div class="cast__category one-column" v-if="haveJob(person_crew, 'Director')">
-				<h3 class="cast__title">Director</h3>
-				<div class="cast__list">
-					<div
-						v-for="person in getPeopleByJob(person_crew, 'Director')"
-						class="cast__item"
-						:key="person.id"
-					>
-						<div class="cast__img">
-							<img
-								:src="person.profile_path"
-								:alt="'Picture of ' + person.name"
-							>
-						</div>
-						<div class="cast__description">
-							<div class="cast__name">{{ person.name }}</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="cast__category two-column" v-if="haveJob(person_crew, 'Writer')">
-				<h3 class="cast__title">Writer</h3>
-				<div class="cast__list">
-					<div
-						v-for="person in getPeopleByJob(person_crew, 'Writer')"
-						class="cast__item"
-						:key="person.id"
-					>
-						<div class="cast__img">
-							<img
-								:src="person.profile_path"
-								:alt="'Picture of ' + person.name"
-							>
-						</div>
-						<div class="cast__description">
-							<div class="cast__name">{{ person.name }}</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="second-column">
-			<div class="cast__category three-column" v-if="person_cast.length > 0">
-				<h3 class="cast__title">Starring</h3>
-				<div class="cast__list">
-					<div
-						v-for="person in person_cast"
-						class="cast__item"
-						:key="person.id"
-					>
-						<div class="cast__img">
-							<img
-								:src="person.profile_path"
-								:alt="'Picture of ' + person.name"
-							>
-						</div>
-						<div class="cast__description">
-							<div class="cast__name">{{ person.name }}</div>
-							<div class="cast__subtitle">as {{ person.character }}</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<Suspense>
+		<template #default>
+			<MovieMain />
+		</template>
+		<template #fallback>
+			Loading...
+		</template>
+	</Suspense>
+	<Suspense>
+		<template #default>
+			<MovieCast />
+		</template>
+		<template #fallback>
+			Loading...
+		</template>
+	</Suspense>
 </template>
 
 <script>
-import RatingStar from "@/components/RatingStar.vue";
+import MovieMain from "@/components/movieDetails/MovieMain.vue";
+import MovieCast from "@/components/movieDetails/MovieCast.vue"
 import { useRoute } from "vue-router";
 import axios from "/config/axios";
-import { warn } from '@vue/runtime-core';
 
 export default {
 	name: "Movie",
 	components: {
-		RatingStar,
+		MovieMain,
+		MovieCast,
 	},
-	data() {
-		return {
-			id: "",
-			title: "Interstellar",
-			poster_path: "",
-			background_path: "",
-			date: new Date(),
-			duration: 171,
-			overview: "Laboris laborum ex ullamco labore fugiat tempor nisi veniam consectetur. Sint nulla ut tempor ut cillum in qui eu labore do irure eiusmod. Sunt nostrud labore consectetur sint occaecat elit consectetur do.",
-			score: 8.2,
-			vote_count: 16234,
-			genres: [{id: 35, name: "Sci-Fi"}, {id: 18, name: "Comedy"}],
-			person_crew: [
-				{id: 12, name: "Christopher Nolan", job: "Director", profile_path: null},
-				{id: 12, name: "Christopher Nolan", job: "Writer", profile_path: null},
-				{id: 25, name: "Jonathan Nolan", job: "Writer", profile_path: null},
-			],
-			person_cast: [
-				{id: 125, order: 0, character: "Joseph 'Coop' Cooper", name: "Matthew McConaughey", profile_path: "wJiGedOCZhwMx9DezY8uwbNxmAY.jpg"},
-				{id: 312, order: 1, character: "Dr. Amelia Brand", name: "Anne Hathaway", profile_path: "tLelKoPNiyJCSEtQTz1FGv4TLGc.jpg"},
-				{id: 78, order: 2, character: "Murphy 'Murph' Cooper", name: "Jessica Chastain", profile_path: "lodMzLKSdrPcBry6TdoDsMN3Vge.jpg"},
-				{id: 48, order: 3, character: "Donald", name: "John Lithgow", profile_path: "8Y1sjBdnVR483S8PrnAQzlESwhx.jpg"},
-			],
-		}
-	},
-	methods: {
-		/** @return {boolean} */
-		haveJob(list, job) {
-			return list.some(person => person.job === job);
-		},
-		/** @return {[{id: number, name: String, job: String, profile_path: String}]} */
-		getPeopleByJob(list, job) {
-			return list.filter(person => person.job === job);
-		},
-		/** @return {string} */
-		getThumbnail(name, imgDefault, c) {
-			let image_url = "https://image.tmdb.org/t/p/w500" + name;
-			let image = new Image();
+	// data() {
+	// 	return {
+	// 		id: "",
+	// 		title: "Loading ...",
+	// 		poster_path: "/no-poster.png",
+	// 		background_path: "",
+	// 		date: "--/--/----",
+	// 		duration: "- mins",
+	// 		overview: "Loading ...",
+	// 		score: -1,
+	// 		vote_count: -1,
+	// 		genres: [{id: -1, name: "Loading ..."}],
+	// 		person_crew: [
+	// 			{id: 12, name: "Loading ...", job: "Director", profile_path: "/no-image.png"},
+	// 			{id: 12, name: "Loading ...", job: "Writer", profile_path: "/no-image.png"},
+	// 		],
+	// 		person_cast: [
+	// 			{id: 125, order: 0, character: "---", name: "Loading ...", profile_path: "/no-image.png"},
+	// 		],
+	// 		userScore: -1,
+	// 	}
+	// },
+	// methods: {
+	// 	/** @return {boolean} */
+	// 	haveJob(list, job) {
+	// 		return list.some(person => person.job === job);
+	// 	},
+	// 	/** @return {[{id: number, name: String, job: String, profile_path: String}]} */
+	// 	getPeopleByJob(list, job) {
+	// 		return list.filter(person => person.job === job);
+	// 	},
+	// 	/** @return {string} */
+	// 	getThumbnail(name, imgDefault, c) {
+	// 		let image_url = "https://image.tmdb.org/t/p/w500" + name;
+	// 		let image = new Image();
 
-			image.onload = function() {
-				c(image_url);
-			}
-			image.onerror = function() {
-				c(imgDefault);
-			}
+	// 		image.onload = function() {
+	// 			c(image_url);
+	// 		}
+	// 		image.onerror = function() {
+	// 			c(imgDefault);
+	// 		}
 
-			image.src = image_url;
-		}
-	},
-	mounted() {
-		const route = useRoute();
-		document.title = `${route.params.id} — TheMoviesualizer`;
-		this.id = route.params.id;
-		const base_url = "https://image.tmdb.org/t/p";
+	// 		image.src = image_url;
+	// 	}
+	// },
+	// async mounted() {
+	// 	const route = useRoute();
+	// 	document.title = `${route.params.id} — TheMoviesualizer`;
+	// 	this.id = route.params.id;
+	// 	const base_url = "https://image.tmdb.org/t/p";
 
-		axios
-			.get(`/api/movie/${this.id}`)
-			.then(res => res.data)
-			.then(data => {
-				this.title = data.title;
-				this.poster_path = data.poster_path;
-				this.score = data.vote_average;
-				this.vote_count = data.vote_count;
-				this.duration = data.runtime;
-				this.overview = data.overview;
-				this.date = new Date(data.release_date);
+	// 	try {
+	// 		let resMovie = await axios.get(`/api/movie/${this.id}`);
+	// 		// TODO : Si 404 on affiche rien, sinon on affiche tout
+	// 		// Actuellement cela va dans le catch peu importe l'erreur (normal de pas trouver le plan d'arrière plan)
+	// 		// Exemple id = 88844
+	// 		let dataMovie = resMovie.data;
+			
+	// 		this.title = dataMovie.title;
+	// 		this.poster_path = dataMovie.poster_path;
+	// 		this.background_path = dataMovie.backdrop_path;
+	// 		this.score = dataMovie.vote_average;
+	// 		this.vote_count = dataMovie.vote_count;
+	// 		this.duration = dataMovie.runtime;
+	// 		this.overview = dataMovie.overview;
+	// 		this.date = new Date(dataMovie.release_date);
+	// 		this.genres = dataMovie.genres;
 
-				// Convert date
-				this.date = this.date.toLocaleDateString();
+	// 		// Convert date
+	// 		this.date = this.date.toLocaleDateString();
 
-				// Convert duration
-				this.duration = Math.floor(this.duration/60) + "h " + this.duration%60 + "mins";
+	// 		// Convert duration
+	// 		this.duration = Math.floor(this.duration/60) + "h " + this.duration%60 + "mins";
 
-				// Images Path
-				this.poster_path = `${base_url}/w500${this.poster_path}`;
-				this.background_path = `${base_url}/original/xJHokMbljvjADYdit5fK5VQsXEG.jpg`;
+	// 		// Images Path
+	// 		this.poster_path = `${base_url}/w500${this.poster_path}`;
+	// 		if (this.background_path)
+	// 			this.background_path = `${base_url}/original${this.background_path}`;
 
-				this.getThumbnail(
-					this.poster_path,
-					"/no-poster.png",
-					(url) => { this.poster_path = url; }
-				);
-			})
-			.catch(err => console.error(err))
-		
-		axios
-			.get(`/api/movie/${this.id}/credits`)
-			.then(res => res.data)
-			.then(data => {
-				this.person_cast = data.cast;
-				this.person_crew = data.crew;
+	// 		this.getThumbnail(
+	// 			this.poster_path,
+	// 			"/no-poster.png",
+	// 			(url) => { this.poster_path = url; }
+	// 		);
+			
+	// 		let resCredits = await axios.get(`/api/movie/${this.id}/credits`)
+	// 		let dataCredits = resCredits.data;
+	// 		this.person_cast = dataCredits.cast;
+	// 		this.person_crew = dataCredits.crew;
 
-				this.person_crew.forEach(p => {
-					this.getThumbnail(
-						p.profile_path,
-						"/no-image.png",
-						(url) => { p.profile_path = url; }
-					);
-				});
-				this.person_cast.forEach(p => {
-					this.getThumbnail(
-						p.profile_path,
-						"/no-image.png",
-						(url) => { p.profile_path = url; }
-					);
-				});
-			})
-	},
+	// 		this.person_crew.forEach(p => {
+	// 			this.getThumbnail(
+	// 				p.profile_path,
+	// 				"/no-image.png",
+	// 				(url) => { p.profile_path = url; }
+	// 			);
+	// 		});
+	// 		this.person_cast.forEach(p => {
+	// 			this.getThumbnail(
+	// 				p.profile_path,
+	// 				"/no-image.png",
+	// 				(url) => { p.profile_path = url; }
+	// 			);
+	// 		});
+	// 	}
+	// 	catch (error) {
+	// 		console.error(error);
+	// 	}
+	// },
 }
 </script>
 
@@ -243,6 +171,10 @@ $poster-width: 350px;
 		overflow: hidden;
 		border-radius: 20px;
 		width: $poster-width;
+		img {
+			display: block;
+			width: 100%;
+		}
 	}
 	&__info {
 		margin-left: $poster-width + 45px;

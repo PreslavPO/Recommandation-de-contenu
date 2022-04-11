@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
 import pickle
+import matplotlib.pyplot as plt
 
 movies_metadata = pd.read_csv("../../Data/movies_metadata.csv", low_memory=False)
 ratings = pd.read_csv("../../Data/ratings_small.csv", low_memory=False)
@@ -48,7 +49,6 @@ trainset = data.build_full_trainset()
 
 # Entraîne l'algorithme sur le trainset
 algo.fit(trainset)
-
 #Si on veut la note que l'user 2 aurait donné au film 123 selon notre algo :
 #prediction = algo.predict(2, 123)
 #print(prediction.est)
@@ -165,3 +165,71 @@ print(recup_titres(predicted))
 # Ici on avait le meilleur score pour name = msd, min_support = 3 et user_based = True
 
 
+with open('../../Data/pred.pkl', 'rb') as f:
+    predictions = pickle.load(f)
+
+
+#return une liste avec les films que 'usr' à noté
+def get_films_by_user(usr):
+
+    user_to_films = []
+
+    for ind in ratings.index:
+        if ratings['userId'][ind] == usr:
+            user_to_films.append(ratings['movieId'][ind])
+    return user_to_films
+film_listenned = get_films_by_user(1)
+print(film_listenned)
+
+
+#initialisation des tab
+y_pred = []
+y_true = []
+list_film = []
+list_note = []
+
+
+# On parcourt les prédictions et on ne ajoute les films et note au tableau correspondant
+for uid, film_id, _, note_estimee, _ in predictions:
+    list_film.append(film_id)
+    list_note.append(note_estimee)
+
+#creer un dataframe
+df = pd.DataFrame(
+    {'note': list_note,
+     'film': list_film,
+    })
+
+#trie
+df = df.sort_values('note', ascending=False)
+
+#on remplie y_pred et y_true
+for index, row in df.iterrows():
+   y_pred.append(row['note'])
+   if int(row['note']) >= 4 and int(row['film']) in film_listenned:
+       y_true.append(1)
+   else:
+       y_true.append(0)
+
+
+#auc
+def compute_roc(y_true, y_pred, plot=True):
+
+    fpr, tpr, thresholds = metrics.roc_curve(y_true, y_pred)
+    auc_score= metrics.auc(fpr, tpr)
+    #fpr, tpr = roc_curve(y_true, y_pred)
+    #auc_score = auc(fpr, tpr)
+    if plot:
+        plt.figure(figsize=(7, 6))
+        plt.plot(fpr, tpr, color='blue',
+                 label='ROC (AUC = %0.4f)' % auc_score)
+        plt.legend(loc='lower right')
+        plt.title("ROC Curve")
+        plt.xlabel("FPR")
+        plt.ylabel("TPR")
+        plt.show()
+
+    return fpr, tpr, auc_score
+
+
+compute_roc(y_true,y_pred)

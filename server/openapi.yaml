@@ -1,0 +1,451 @@
+openapi: 3.0.0
+info:
+  description: |
+    TheMoviesualizer API, get informations and recommendations to movies
+  version: "1.0.0"
+  title: TheMoviesualizer
+servers:
+  - description: Local server
+    url: http://localhost:5000
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/Spaicat/TheMoviesualizer/1.0.0
+tags:
+  - name: api
+    description: Everything about movies
+  - name: user
+    description: Operations about authentification of user
+paths:
+  "/api/movie/{movieId}":
+    get:
+      tags:
+        - api
+      summary: Get details
+      description: Get main information about a movie
+      operationId: GET_movie-movie_id
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        "400":
+          $ref: "#/components/responses/Error-401"
+        "404":
+          $ref: "#/components/responses/Error-404"
+  "/api/movie/{movieId}/credits":
+    get:
+      tags:
+        - api
+      summary: Get Credits of a movie
+      description: Get the cast and crew for a movie.
+      operationId: GET_movie-movie_id-credits
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: object
+                    properties:
+                      "$oid":
+                        type: string
+                  id:
+                    type: integer
+                  cast:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        adult:
+                          type: boolean
+                        gender:
+                          type: integer
+                          nullable: true
+                        id:
+                          type: integer
+                        known_for_department:
+                          type: string
+                        name:
+                          type: string
+                        original_name:
+                          type: string
+                        popularity:
+                          type: string
+                        profile_path:
+                          type: string
+                        cast_id:
+                          type: integer
+                        character:
+                          type: string
+                        credit_id:
+                          type: string
+                        order:
+                          type: integer
+                  crew:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        adult:
+                          type: boolean
+                        gender:
+                          type: integer
+                          nullable: true
+                        id:
+                          type: integer
+                        known_for_department:
+                          type: string
+                        name:
+                          type: string
+                        original_name:
+                          type: string
+                        popularity:
+                          type: number
+                        profile_path:
+                          type: string
+                        credit_id:
+                          type: string
+                        department:
+                          type: string
+                        job:
+                          type: string
+                example:
+                  _id:
+                    "$oid": 6240ab97c398d9e7d052ebd0
+                  id: 157336
+                  cast:
+                    - adult: false
+                      cast_id: 9
+                      character: "Joseph 'Coop' Cooper"
+                      credit_id: 52fe4bbf9251416c910e47cb
+                      gender: 2
+                      id: 10297, 
+                      known_for_department: Acting
+                      name: Matthew McConaughey
+                      order: 0
+                      original_name: Matthew McConaughey
+                      popularity: 29.17
+                      profile_path: /wJiGedOCZhwMx9DezY8uwbNxmAY.jpg
+                    - adult: false
+                      cast_id: 169
+                      character: "Dr. Amelia Brand"
+                      credit_id: 57fe146fc3a368504a00261e
+                      gender: 1
+                      id: 1813, 
+                      known_for_department: Acting
+                      name: Anne Hathaway
+                      order: 1
+                      original_name: Anne Hathaway
+                      popularity: 31.046
+                      profile_path: /5sWEVBNiBwn3qSZ1iC9Pv6NScGH.jpg
+                  crew:
+                    - adult: false, 
+                      credit_id: 52fe4bbf9251416c910e4801, 
+                      department: Sound, 
+                      gender: 2, 
+                      id: 947, 
+                      job: Original Music Composer, 
+                      known_for_department: Sound, 
+                      name: Hans Zimmer, 
+                      original_name: Hans Zimmer, 
+                      popularity: 4.63, 
+                      profile_path: /tpQnDeHY15szIXvpnhlprufz4d.jpg
+                    - adult: false, 
+                      credit_id: 5e83abfad236e60017fd99ed, 
+                      department: Directing, 
+                      gender: 2, 
+                      id: 525, 
+                      job: Director, 
+                      known_for_department: Directing, 
+                      name: Christopher Nolan, 
+                      original_name: Christopher Nolan, 
+                      popularity: 11.58, 
+                      profile_path: /xuAIuYSmsUzKlUMBFGVZaWsY3DZ.jpg
+        "400":
+          $ref: "#/components/responses/Error-401"
+        "404":
+          $ref: "#/components/responses/Error-404"
+  "/api/movie/top_rating":
+    get:
+      tags:
+        - api
+      summary: Get Top Rating
+      description: Get the top rated movies
+      operationId: GET_movie-top_rating
+      parameters:
+        - in: query
+          name: page
+          description: "Specify which page to query"
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    example: 1
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Movie"
+                  total_results:
+                    type: integer
+                  total_pages:
+                    type: integer
+        "400":
+          $ref: "#/components/responses/Error-401"
+        "404":
+          $ref: "#/components/responses/Error-404"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+        userStatus:
+          type: integer
+          format: int32
+          description: User Status
+      xml:
+        name: User
+    Genre:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 878
+        name:
+          type: string
+          example: Science Fiction
+      xml:
+        name: Genre
+    Movie:
+      type: object
+      required:
+        - _id
+      properties:
+        _id:
+          type: object
+          properties:
+            "$oid":
+              type: string
+              example: 6240a9bd2143e3abdcface2c
+        id:
+          type: integer
+          example: 157336
+        adult:
+          type: boolean
+        backdrop_path:
+          type: string
+          nullable: true
+          example: /5C3RriLKkIAQtQMx85JLtu4rVI2.jpg
+        belongs_to_collection:
+          type: object
+          nullable: true
+          example: null
+          properties:
+            id:
+              type: integer
+            backdrop_path:
+              type: string
+            name:
+              type: string
+            poster_path:
+              type: string
+        genres:
+          type: array
+          items:
+            $ref: "#/components/schemas/Genre"
+          example:
+            - id: 12
+              name: Adventure
+            - id: 18
+              name: Drama
+            - id: 878
+              name: Science Fiction
+        homepage:
+          type: string
+          nullable: true
+          example: ""
+        imdb_id:
+          type: string
+          nullable: true
+          example: tt0816692
+          minLength: 9
+          maxLength: 9
+          pattern: ^tt[0-9]{7}
+        original_language:
+          type: string
+          example: en
+        original_title:
+          type: string
+          example: Interstellar
+        overview:
+          type: string
+          nullable: true
+          example: Interstellar chronicles the adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.
+        popularity:
+          type: number
+          example: 32.213481
+        poster_path:
+          type: string
+          nullable: true
+          example: /gEU2QniE6E77NI6lCU6MxlNBvIx.jpg
+        production_companies:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: object
+            xml:
+              name: production_company
+            properties:
+              id:
+                type: integer
+                example:
+              name:
+                type: string
+            example:
+              - id: 4
+                name: Paramount Pictures
+              - id: 923
+                name: Legendary Pictures
+        production_countries:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: object
+            xml:
+              name: production_countries
+            properties:
+              iso_3166_1:
+                type: string
+              name:
+                type: string
+            example:
+              - iso_3166_1: CA
+                name: Canada
+              - iso_3166_1: US
+                name: United States of America
+              - iso_3166_1: GB
+                name: United Kingdom
+        release_date:
+          type: string
+          format: date
+          example: "2014-11-05"
+        revenue:
+          type: integer
+          example: 675120017
+        runtime:
+          type: integer
+          nullable: true
+          example: 169.0
+        spoken_languages:
+          type: array
+          xml:
+            name: spoken_language
+            wrapped: true
+          items:
+            type: object
+            properties:
+              iso_639_1:
+                type: string
+              name:
+                type: string
+            example:
+              - iso_639_1: en
+                name: English
+        status:
+          type: string
+          enum:
+            - Rumored
+            - Planned
+            - In Production
+            - Post Production
+            - Released
+            - Canceled
+          example: Released
+        tagline:
+          type: string
+          nullable: true
+          example: Mankind was born on Earth. It was never meant to die here.
+        title:
+          type: string
+          example: Interstellar
+        video:
+          type: boolean
+          example: false
+        vote_average:
+          type: number
+          example: 8.1
+        vote_count:
+          type: integer
+          example: 11187
+      xml:
+        name: Movie
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+  responses:
+    Error-401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Error-404:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  requestBodies:
+    UserArray:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+      description: List of user object
+      required: true

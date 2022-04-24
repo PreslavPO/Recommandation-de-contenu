@@ -8,21 +8,25 @@
 				<div class="filter__list">
 					<div class="filter__group">
 						<h3>By date</h3>
-						<label for="start-date">From</label>
-						<input type="date" id="start-date" v-model="startDateSelected" placeholder="xxxx-xx-xx" />
-						<label for="end-date">To</label>
-						<input type="date" id="end-date" v-model="endDateSelected" placeholder="xxxx-xx-xx" />
+						<div class="filter-date">
+							<label for="start-date">From</label>
+							<input class="filter__input" type="date" id="start-date" v-model="startDateSelected" placeholder="xxxx-xx-xx" />
+						</div>
+						<div class="filter-date">
+							<label for="end-date">To</label>
+							<input class="filter__input" type="date" id="end-date" v-model="endDateSelected" placeholder="xxxx-xx-xx" />
+						</div>
 					</div>
 					<div class="filter__group">
 						<h3>By language</h3>
 						<select v-model="languageSelected" name="languages" id="languages-select" class="filter__input">
 							<option value="">No selection</option>
 							<option
-								v-for="genre in languages"
-								:key="genre._id"
-								:value="genre._id"
+								v-for="language in languages"
+								:key="language._id"
+								:value="language._id"
 							>
-								{{ genre.name }} ({{ genre.total }})
+								{{ language.name }} ({{ language.total }})
 							</option>
 						</select>
 					</div>
@@ -47,7 +51,7 @@
 						</ul>
 					</div>
 					<div class="filter__group">
-						<input type="button" value="Rechercher" @click="search">
+						<input class="filter-search" type="button" value="Rechercher" @click="search">
 					</div>
 				</div>
 			</div>
@@ -158,22 +162,85 @@ $element-space: 75px;
 	}
 }
 .filter {
-	width: 200px;
-	min-width: 200px;
+	width: 250px;
+	min-width: 250px;
 	&__list {
 	}
 	&__group {
 		h3 {
-			color: $font2-color;
+			color: $font-color;
 			font-weight: 500;
 			font-size: 18px;
 		}
 	}
 	&__input {
+		padding: 8px;
 		width: 100%;
+		font-size: 16px;
+		border-radius: 10px;
+		border: 1px solid $font-color;
+		background-color: $back2-color;
+		color: $font-color;
+		fill: $font-color;
+		color-scheme: dark;
 	}
-}
-select {
-	border-radius: 10px;
+
+	&-search {
+		cursor: pointer;
+		margin-top: 15px;
+		padding: 8px;
+		width: 100%;
+		background-color: $main-color;
+		border-radius: 50px;
+		border: none;
+		color: $back2-color;
+		font-weight: 700;
+		font-size: 19px;
+		&:hover {
+			background-color: $main2-color;
+		}
+	}
+	&-date {
+		display: flex;
+		margin-top: 8px;
+		label {
+			display: inline-flex;
+			align-items: center;
+			margin-right: 10px;
+			width: 50px;
+			min-width: 50px;
+			color: $font2-color;
+			font-size: 16px;
+		}
+	}
+	&-genres {
+		display: flex;
+		flex-wrap: wrap;
+		margin: 0;
+		padding: 0;
+		&__item {
+			display: block;
+			margin: 0 6px 8px 0;
+			list-style: none;
+			.genres-input {
+				display: none;
+				&:checked + .genres-label {
+					background-color: $second-color;
+					border-color: $second-color;
+					color: $font-color;
+				}
+			}
+			.genres-label {
+				cursor: pointer;
+				display: block;
+				padding: 4px 12px;
+				border: 1px solid $font2-color;
+				border-radius: 50px;
+				color: $font2-color;
+				font-size: 14px;
+				font-weight: 200;
+			}
+		}
+	}
 }
 </style>

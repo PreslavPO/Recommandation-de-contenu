@@ -5,7 +5,7 @@ MOVIES_BY_PAGES = 15
 
 movies_metadata = pd.read_csv("./data/movies_metadata.csv", low_memory=False)
 
-def get_top_rating(page=1):
+def get_top_rating():
 	# Calcule la moyenne de la colonne vote_average
 	global_mean = movies_metadata['vote_average'].mean()
 
@@ -24,20 +24,25 @@ def get_top_rating(page=1):
 	# Creer une nouvelle colonne score calculer a l'aide de la fonction weighted_rating
 	q_movies['score'] = q_movies.apply(weighted_rating, axis=1)
 
-	#print(q_movies.shape)
-
-	#Trie les films en fonction du score par ordre decroissant
+	# Trie les films en fonction du score par ordre decroissant
 	q_movies = q_movies.sort_values('score', ascending=False)
 
-	# Selection des films en fonction de la page séléctionné
-	page = page-1 # La numérotation commence à 1 => 2 = 2ème page
+	# Converti les date
+	q_movies["release_date"] = pd.to_datetime(q_movies["release_date"])
+	
+	return q_movies
 
-	# Renvoie :
-	#	Les ids des films du top de la page sélectionné
-	#	Le nombre total de films retenu
-	#	Le nombre total de pages retenu
-	return (
-		q_movies[page*MOVIES_BY_PAGES:page*MOVIES_BY_PAGES+MOVIES_BY_PAGES]["id"].astype(int),
-		q_movies.shape[0],
-		int(math.ceil(q_movies.shape[0] / MOVIES_BY_PAGES))
-	)
+def get_page_of_movies(movies, page=1):
+	# La numérotation commence à 1 => 2 = 2ème page
+	page = page-1
+
+	# Les ids des films du top de la page sélectionné
+	return movies[page*MOVIES_BY_PAGES:page*MOVIES_BY_PAGES+MOVIES_BY_PAGES]["id"].astype(int)
+
+# Le nombre total de films retenu
+def get_nb_movies(movies):
+	return movies.shape[0]
+
+# Le nombre total de pages retenu
+def get_nb_pages(movies):
+	return int(math.ceil(movies.shape[0] / MOVIES_BY_PAGES))

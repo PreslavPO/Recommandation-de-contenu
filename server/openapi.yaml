@@ -181,19 +181,53 @@ paths:
           $ref: "#/components/responses/Error-401"
         "404":
           $ref: "#/components/responses/Error-404"
-  "/api/movie/top_rating":
+  "/api/movie/list":
     get:
       tags:
         - api
-      summary: Get Top Rating
-      description: Get the top rated movies
-      operationId: GET_movie-top_rating
+      summary: Get Movies list
+      description: Get a list of movies by different types of data
+      operationId: GET_movie-list
       parameters:
         - in: query
           name: page
           description: "Specify which page to query"
           schema:
             type: integer
+            default: 1
+        - in: query
+          name: sort_by
+          description: "Sort by option choosed"
+          schema:
+            type: string
+            enum:
+              - top_rating.asc
+              - top_rating.desc
+              - release_date.asc
+              - release_date.desc
+            default: top_rating.desc
+        - in: query
+          name: original_language
+          description: "Specify an ISO 639-1 string to filter results by their original language value."
+          schema:
+            type: string
+        - in: query
+          name: genres
+          description: "Comma separated value of genre ids that you want to include in the results."
+          schema:
+            type: string
+        - in: query
+          name: release_date.gte
+          description: "Filter and only include movies that have a release date (looking at all release dates) that is greater or equal to the specified value."
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: release_date.lte
+          description: "Filter and only include movies that have a release date (looking at all release dates) that is less than or equal to the specified value."
+          schema:
+            type: string
+            format: date
       responses:
         "200":
           description: ""
@@ -213,6 +247,73 @@ paths:
                     type: integer
                   total_pages:
                     type: integer
+        "400":
+          $ref: "#/components/responses/Error-401"
+        "404":
+          $ref: "#/components/responses/Error-404"
+  "/api/movie/genres":
+    get:
+      tags:
+        - api
+      summary: Get list of all genres
+      description: Get the list of all genres for movies
+      operationId: GET_movie-genres
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                example:
+                  - id: 28
+                    name: Action
+                  - id: 13
+                    name: Science-Fiction
+        "400":
+          $ref: "#/components/responses/Error-401"
+        "404":
+          $ref: "#/components/responses/Error-404"
+  "/api/movie/languages":
+    get:
+      tags:
+        - api
+      summary: Get list of all languages
+      description: Get the list of language for movies
+      operationId: GET_movie-languages
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    iso_639_1:
+                      type: string
+                    name:
+                      type: string
+                    total:
+                      type: integer
+                example:
+                  - iso_639_1: en
+                    name: English
+                    total: 12062
+                  - iso_639_1: fr
+                    name: French
+                    total: 2263
+                  - iso_639_1: de
+                    name: Deutsch
+                    total: 1864
         "400":
           $ref: "#/components/responses/Error-401"
         "404":

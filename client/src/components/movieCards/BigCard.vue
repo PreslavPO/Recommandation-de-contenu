@@ -91,6 +91,7 @@ export default {
 		border-radius: 20px;
 		width: 200px;
 		min-width: 200px;
+		height: fit-content;
 		img {
 			display: block;
 			width: 100%;
@@ -108,13 +109,16 @@ export default {
 			display: flex;
 			align-items: center;
 			flex-wrap: wrap;
+			margin-top: 5px;
 			&__text {
 				font-size: 16px;
 				color: $font2-color;
+				margin-top: 5px;
 				margin-right: 20px;
 			}
 			&__genre {
 				display: flex;
+				flex-wrap: wrap;
 				margin: 0;
 				padding: 0;
 				list-style: none;
@@ -122,6 +126,7 @@ export default {
 				li {
 					margin-right: 10px;
 					padding: 5px 20px;
+					margin-top: 5px;
 					border-radius: 50px;
 					background-color: #2933FF;
 				}
@@ -131,9 +136,11 @@ export default {
 			margin: 0;
 			margin-top: 20px;
 			font-size: 16px;
+			overflow-wrap: anywhere;
 		}
 		.score-list {
 			display: flex;
+			flex-wrap: wrap;
 			grid-gap: 30px;
 			margin-top: 30px;
 		}

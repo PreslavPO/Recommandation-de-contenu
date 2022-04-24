@@ -318,30 +318,37 @@ paths:
           $ref: "#/components/responses/Error-401"
         "404":
           $ref: "#/components/responses/Error-404"
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      responses:
+        default:
+          description: successful operation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Created user object
+        required: true
 components:
   schemas:
     User:
       type: object
       properties:
-        id:
+        _id:
           type: integer
           format: int64
         username:
-          type: string
-        firstName:
-          type: string
-        lastName:
           type: string
         email:
           type: string
         password:
           type: string
-        phone:
-          type: string
-        userStatus:
-          type: integer
-          format: int32
-          description: User Status
       xml:
         name: User
     Genre:

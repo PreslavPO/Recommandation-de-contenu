@@ -39,6 +39,14 @@ const routes = [
 		},
 	},
 	{
+		path: "/profile",
+		name: "Profile",
+		component: () => import("../views/Profile.vue"),
+		meta: {
+			title: "Profile — TheMoviesualizer",
+		},
+	},
+	{
 		path: "/:catchAll(.*)",
 		component: () => import("../views/NotFound.vue"),
 		meta: {

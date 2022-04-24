@@ -37,7 +37,6 @@
 					<span class="pagination__content separator" v-else>...</span>
 				</li>
 				<div v-if="movieList.page < movieList.total_pages" class="pagination__button">
-						<!--@click="changePage(parseInt(movieList.page)+1)"-->
 					<router-link
 						class="pagination__content link"
 						:to="{ query: { ...this.$route.query, page: parseInt(movieList.page)+1 } }"

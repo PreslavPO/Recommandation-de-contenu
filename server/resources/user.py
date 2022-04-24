@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Resource
+from models.user import User
 
-class User(Resource):
-	def get(self):
-		return { "message": "WORK !" }, 200
+class SignUp(Resource):
+	def post(self):
+		return User().signup()

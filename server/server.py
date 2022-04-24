@@ -2,7 +2,7 @@ from flask import Flask, render_template, send_from_directory
 from flask_cors import CORS
 from flask_restful import Api
 
-from resources.user import User
+from resources.user import SignUp
 from resources.api import Movie, MovieCredits, ListMovies, Genres, Languages
 
 app = Flask(__name__)
@@ -19,7 +19,7 @@ api.add_resource(Genres, "/api/movie/genres")
 api.add_resource(Languages, "/api/movie/languages")
 
 # User routes
-api.add_resource(User, "/user")
+api.add_resource(SignUp, "/user/signup")
 
 # Routes for swagger docs and specs (Don't use restful -> template not working with it)
 @app.route("/docs")

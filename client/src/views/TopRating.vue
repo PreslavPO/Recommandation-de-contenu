@@ -51,7 +51,7 @@
 						</ul>
 					</div>
 					<div class="filter__group">
-						<input class="filter-search" type="button" value="Rechercher" @click="search">
+						<input class="filter-search" type="button" value="Search" @click="search">
 					</div>
 				</div>
 			</div>

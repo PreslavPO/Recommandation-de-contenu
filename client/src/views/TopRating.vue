@@ -162,11 +162,21 @@ $element-space: 75px;
 	}
 }
 .filter {
-	width: 250px;
-	min-width: 250px;
+	width: 300px;
+	min-width: 300px;
+	padding: 30px;
+	border-radius: 20px;
+	background-color: $back-color;
+	height: fit-content;
+	> h3 {
+		margin: 0;
+		margin-bottom: 20px;
+		font-size: 26px;
+	}
 	&__list {
 	}
 	&__group {
+		margin-top: 20px;
 		h3 {
 			color: $font-color;
 			font-weight: 500;
@@ -202,13 +212,15 @@ $element-space: 75px;
 	}
 	&-date {
 		display: flex;
-		margin-top: 8px;
+		flex-direction: column;
+		margin-top: 10px;
 		label {
 			display: inline-flex;
 			align-items: center;
 			margin-right: 10px;
-			width: 50px;
-			min-width: 50px;
+			margin-bottom: 5px;
+			width: 40px;
+			min-width: 40px;
 			color: $font2-color;
 			font-size: 16px;
 		}

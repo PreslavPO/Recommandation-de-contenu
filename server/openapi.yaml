@@ -318,7 +318,7 @@ paths:
           $ref: "#/components/responses/Error-401"
         "404":
           $ref: "#/components/responses/Error-404"
-  /user:
+  /user/signup:
     post:
       tags:
         - user
@@ -332,7 +332,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
         description: Created user object
         required: true
 components:

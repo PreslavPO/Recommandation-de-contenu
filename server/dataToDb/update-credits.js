@@ -35,6 +35,10 @@ db.credits.find({ id: { $type: "int" } }).forEach(async (doc) => {
 	try {
 		const res = await axios.get(`https://api.themoviedb.org/3/movie/${doc.id}/credits?api_key=${process.env.TMDB_API_KEY}`);
 		const data = res.data;
+
+		// Remove useless data to free space
+		data.crew = data.crew.filter(p => p.department == "Writing" || p.department == "Directing" || p.job == "Producer")
+
 		bulkOperations.push({
 			"updateOne": {
 				"filter": { "_id": doc._id },

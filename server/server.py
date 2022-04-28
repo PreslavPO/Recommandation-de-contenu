@@ -4,7 +4,7 @@ from flask_restful import Api
 from dotenv import load_dotenv
 import os
 
-from resources.user import SignUp, SignOut, Login, CheckSession, UserRating
+from resources.user import SignUp, SignOut, Login, CheckSession, UserRating, UserRatingMovie
 from resources.api import Movie, MovieCredits, ListMovies, Genres, Languages
 
 # Environment variables
@@ -29,7 +29,8 @@ api.add_resource(Languages, "/api/movie/languages")
 api.add_resource(SignUp, "/user/signup")
 api.add_resource(SignOut, "/user/signout")
 api.add_resource(Login, "/user/login")
-api.add_resource(UserRating, "/user/rating")
+api.add_resource(UserRating, "/user/<string:userId>/rating")
+api.add_resource(UserRatingMovie, "/user/<string:userId>/rating/<int:movieId>") # TODO : Remove rating when clear stars
 api.add_resource(CheckSession, "/user/session")
 
 # Routes for swagger docs and specs (Don't use restful -> template not working with it)

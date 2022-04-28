@@ -17,15 +17,25 @@
 			</div>
 			<p class="overview-text">{{ movie.overview }}</p>
 			<div class="score-list">
-				<RatingStar :is-global="true" :score="movie.vote_average" :vote-count="movie.vote_count" />
-				<RatingStar :is-global="false" :score="-1" />
+				<RatingScore
+					:is-global="true"
+					:score="movie.vote_average"
+					:vote-count="movie.vote_count"
+				/>
+				<RatingScore
+					:is-global="false"
+					:score="userRating || -1"
+					:movie-id="movie.id"
+					:movie-title="movie.title"
+					@set-score="setNewScore"
+				/>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-import RatingStar from "@/components/RatingStar.vue";
+import RatingScore from "@/components/rating/RatingScore.vue";
 
 export default {
 	name: "BigCard",
@@ -40,13 +50,24 @@ export default {
 			vote_average: Number,
 			vote_count: Number,
 			genres: Array,
-		}
+		},
 	},
 	components: {
-		RatingStar,
+		RatingScore,
 	},
 	data() {
 		return {
+			userRating: -1,
+		}
+	},
+	methods: {
+		async setNewScore(score) {
+			this.$store.dispatch("setRating", { "movieId": this.movie.id, score })
+				.then((res) => {
+					console.log(res.message);
+					this.userRating = score;
+				})
+				.catch((err) => console.error(err));
 		}
 	},
 	async created() {
@@ -77,6 +98,14 @@ export default {
 			this.movie.poster_path,
 			"/no-poster.png"
 		);
+
+		// User Rating
+		this.$store.dispatch("getRating", this.movie.id)
+			.then((res) => {
+				if (res.rating)
+					this.userRating = res.rating;
+			})
+			.catch(() => this.userRating = -1);
 	},
 }
 </script>

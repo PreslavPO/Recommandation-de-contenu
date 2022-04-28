@@ -3,7 +3,11 @@
 		<div class="score__icon" :class="{ gold: isGlobal }">
 			<StarFillIcon />
 		</div>
-		<div class="score__details">
+		<component
+			:is="isGlobal ? 'div' : 'a'"
+			v-on="!isGlobal ? { click: openTab } : {}"
+			:class="'score__details ' + (isGlobal ? '' : 'score__click')"
+		>
 			<div class="details__title">
 				<template v-if="score && score != -1">{{ score }}</template>
 				<template v-else>-</template>
@@ -14,22 +18,56 @@
 				<template v-else>- reviews</template>
 			</div>
 			<div v-else class="details__subtitle">Your review</div>
-		</div>
+		</component>
 	</div>
+
+	<Teleport to="div#main" v-if="!isGlobal">
+		<Modal :show="showModal" @close="showModal = false">
+			<template #header>
+				<h3>{{ movieTitle }}</h3>
+			</template>
+			<template #body>
+				<RatingStars
+					:score="score"
+					@set-score="(newScore) => {
+						$emit('setScore', newScore);
+						this.scoreData = newScore;
+					}"
+				/>
+			</template>
+		</Modal>
+	</Teleport>
 </template>
 
 <script>
 import StarFillIcon from "@/components/icons/StarFillIcon.vue";
+import Modal from "@/components/Modal.vue";
+import RatingStars from "@/components/rating/RatingStars.vue";
 
 export default {
-	name: "RatingStar",
 	components: {
 		StarFillIcon,
+		Modal,
+		RatingStars,
 	},
 	props: {
 		isGlobal: Boolean,
 		score: Number,
 		voteCount: Number,
+		movieId: Number,
+		movieTitle: String,
+	},
+	emits: ["setScore"],
+	data() {
+		return {
+			showModal: false,
+			scoreData: -1,
+		}
+	},
+	methods: {
+		openTab() {
+			this.showModal = true;
+		},
 	},
 }
 </script>
@@ -73,6 +111,12 @@ export default {
 		.details__subtitle {
 			font-size: 16px;
 			color: $font2-color;
+		}
+		&.score__click {
+			cursor: pointer;
+			&:hover {
+				text-decoration: underline;
+			}
 		}
 	}
 }

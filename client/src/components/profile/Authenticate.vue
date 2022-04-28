@@ -30,7 +30,7 @@
 
 					<p class="error">{{ signup.error }}</p>
 
-					<input type="button" value="Sign Up" @click="signupSubmit" /> <!--TODO : Validation and transform into submit-->
+					<input type="button" value="Sign Up" @click="signupSubmit" />
 				</form>
 			</div>
 		</div>

@@ -167,6 +167,7 @@ $element-space: 75px;
 	min-width: 300px;
 	padding: 30px;
 	border-radius: 20px;
+	border: 1px solid $main-color;
 	background-color: $back-color;
 	height: fit-content;
 	> h3 {

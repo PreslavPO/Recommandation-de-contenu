@@ -18,8 +18,8 @@
 			</div>
 			<p class="overview-text">{{ movie.overview }}</p>
 			<div class="score-list">
-				<RatingStar :is-global="true" :score="movie.score" :vote-count="movie.vote_count" />
-				<RatingStar :is-global="false" :score="movie.userScore" />
+				<RatingScore :is-global="true" :score="movie.score" :vote-count="movie.vote_count" />
+				<RatingScore :is-global="false" :score="movie.userScore" />
 			</div>
 		</div>
 	</div>
@@ -29,11 +29,11 @@
 import { ref } from "vue";
 import axios from "@/../config/axios";
 import { useRoute } from "vue-router";
-import RatingStar from "@/components/RatingStar.vue";
+import RatingScore from "@/components/rating/RatingScore.vue";
 
 export default {
 	components: {
-		RatingStar,
+		RatingScore,
 	},
 	async setup() {
 		const base_url = "https://image.tmdb.org/t/p";

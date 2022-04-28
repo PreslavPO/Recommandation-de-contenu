@@ -28,11 +28,14 @@ class CheckSession(Resource):
 	def get(self):
 		return User().check_session();
 
+class UserRatingMovie(Resource):
+	method_decorators = [login_required]
+
+	def get(self, userId, movieId):
+		return User().get_rating(userId, movieId)
+
 class UserRating(Resource):
 	method_decorators = [login_required]
 
-	def get(self):
-		return User().get_rating()
-
-	def post(self):
-		return User().set_rating()
+	def post(self, userId):
+		return User().set_rating(userId)

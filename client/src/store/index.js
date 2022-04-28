@@ -24,9 +24,11 @@ export default createStore({
 						resolve(res.data);
 					})
 					.catch((err) => {
-						context.commit("LOGGED_OUT");
-						if (err.response.data)
+						if (err.response) {
+							if (err.response.status === 401)
+								context.commit("LOGGED_OUT");
 							reject(err.response.data);
+						}
 						else if (err.request)
 							console.error(err.request);
 						else
@@ -34,12 +36,18 @@ export default createStore({
 					});
 			});
 		},
-		getRating(context) {
+		getRating(context, movieId) {
 			return context.dispatch(
 				"requestWithCredentials",
-				axios.get("/user/rating")
+				axios.get(`/user/${context.state.user._id}/rating/${movieId}`)
 			);
-		}
+		},
+		setRating(context, { movieId, score }) {
+			return context.dispatch(
+				"requestWithCredentials",
+				axios.post(`/user/${context.state.user._id}/rating`, { movieId, score })
+			);
+		},
 	},
 	modules: {
 	},

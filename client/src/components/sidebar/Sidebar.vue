@@ -8,7 +8,7 @@
 			<SidebarLink to="/settings" text="Settings"><GearIcon /></SidebarLink>
 		</ul>
 		<div class="profile">
-			<SidebarLink to="/profile" text="Profile">👤</SidebarLink>
+			<SidebarLink to="/profile" :text="$store.state.user.username || 'Login or Sign Up'">👤</SidebarLink>
 		</div>
 	</header>
 </template>

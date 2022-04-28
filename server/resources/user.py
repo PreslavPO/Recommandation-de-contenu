@@ -20,8 +20,19 @@ class SignOut(Resource):
 	def post(self):
 		return User().signout()
 
-class UserInfo(Resource):
+class Login(Resource):
+	def post(self):
+		return User().login()
+
+class CheckSession(Resource):
+	def get(self):
+		return User().check_session();
+
+class UserRating(Resource):
 	method_decorators = [login_required]
 
 	def get(self):
-		return User().get_user()
+		return User().get_rating()
+
+	def post(self):
+		return User().set_rating()

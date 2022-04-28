@@ -1,5 +1,7 @@
-import { createRouter, createWebHistory, createWebHashHistory } from "vue-router"
-import Home from "../views/Home.vue"
+import { createRouter, createWebHistory, createWebHashHistory } from "vue-router";
+import Home from "../views/Home.vue";
+import store from "../store";
+import axios from "/config/axios";
 
 const routes = [
 	{
@@ -62,7 +64,20 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
 	document.title = `${to.meta.title}`;
-	next();
+	if (!store.state.isLogged) {
+		axios
+			.get("/user/session")
+			.then((res) => {
+				if (res.data.login == true)
+					store.commit("LOGGED_IN", res.data.user);
+			})
+			.finally(() => {
+				next();
+			});
+	}
+	else {
+		next();
+	}
 });
 
 export default router;

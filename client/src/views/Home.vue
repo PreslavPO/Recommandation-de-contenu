@@ -23,17 +23,6 @@ export default {
 	components: {
 		SmallCard,
 	},
-	data() {
-		return {
-			title: "Chargement...",
-		}
-	},
-	mounted() {
-		axios
-			.get("/api/hello")
-			.then(res => this.title = res.data.message)
-			.catch(err => console.error(err))
-	},
 }
 </script>
 

@@ -29,6 +29,7 @@ class User:
 			return { "message": "Email cannot be empty" }, 400
 		if (user["password"] == ""):
 			return { "message": "Password cannot be empty" }, 400
+			
 		if (db.users.find_one({ "email": user["email"] })):
 			return { "message": "Email already used" }, 400
 
@@ -48,6 +49,26 @@ class User:
 	def signout(self):
 		session.clear()
 		return { "message": "Session cleared" }, 200
+	
+	def login(self):
+		req = request.get_json(force=True)
 
-	def get_user(self):
-		return session["user"], 200
+		# Search user with email provided
+		user = db.users.find_one({ "email": req["email"] })
+
+		# Generate salt
+		if user and bcrypt.checkpw(req["password"].encode("utf-8"), user["password"]):
+			return self.start_session(user)
+
+		return { "message": "Invalid email or password" }, 401
+
+	def check_session(self):
+		if (session.get("logged_in")):
+			return { "login": True, "user": session["user"] }, 200
+		return { "login": False }, 200
+
+	def get_rating(self):
+		return {"work": True}, 200 # TODO : Renvoyer la note par rapport à un id
+
+	def set_rating(self):
+		return { "todo": True }, 200

@@ -4,7 +4,7 @@ from flask_restful import Api
 from dotenv import load_dotenv
 import os
 
-from resources.user import SignUp, SignOut, UserInfo
+from resources.user import SignUp, SignOut, Login, CheckSession, UserRating
 from resources.api import Movie, MovieCredits, ListMovies, Genres, Languages
 
 # Environment variables
@@ -28,7 +28,9 @@ api.add_resource(Languages, "/api/movie/languages")
 # User routes
 api.add_resource(SignUp, "/user/signup")
 api.add_resource(SignOut, "/user/signout")
-api.add_resource(UserInfo, "/user")
+api.add_resource(Login, "/user/login")
+api.add_resource(UserRating, "/user/rating")
+api.add_resource(CheckSession, "/user/session")
 
 # Routes for swagger docs and specs (Don't use restful -> template not working with it)
 @app.route("/docs")

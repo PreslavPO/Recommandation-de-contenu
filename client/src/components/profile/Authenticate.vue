@@ -5,8 +5,8 @@
 				<form class="authenticate__form" name="login_form">
 					<h2>Login</h2>
 
-					<label for="login-username">Username</label>
-					<input v-model="login.username" type="text" name="login-username" required />
+					<label for="login-email">Email</label>
+					<input v-model="login.email" type="text" name="login-email" required />
 
 					<label for="login-password">Password</label>
 					<input v-model="login.password" type="password" name="login-password" required />
@@ -44,7 +44,7 @@ export default {
 	data() {
 		return {
 			login: {
-				username: "",
+				email: "",
 				password: "",
 				error: "",
 			},
@@ -58,16 +58,14 @@ export default {
 	},
 	methods: {
 		async signupSubmit() {
-			console.log("signup");
+			this.signup.error = "";
 			try {
 				const res = await axios.post("/user/signup", {
 					username: this.signup.username,
 					email: this.signup.email,
 					password: this.signup.password,
 				})
-				if (res.data.status === "success") {
-					console.log(res);
-				}
+				this.$store.commit("LOGGED_IN", res.data);
 			}
 			catch (err) {
 				if (err.response)
@@ -79,16 +77,13 @@ export default {
 			}
 		},
 		async loginSubmit() {
-			// TODO : Temporary to test connexion -> Remove it
-			console.log("login");
-			const resGet = await axios.get("/user");
-			console.log(resGet);
-			/*try {
+			this.login.error = "";
+			try {
 				const res = await axios.post("/user/login", {
-					username: this.login.username,
+					email: this.login.email,
 					password: this.login.password,
 				})
-				console.log(res.data)
+				this.$store.commit("LOGGED_IN", res.data);
 			}
 			catch (err) {
 				if (err.response)
@@ -97,7 +92,7 @@ export default {
 					console.error(err.request);
 				else
 					console.error("Error", err.message);
-			}*/
+			}
 		},
 	},
 }

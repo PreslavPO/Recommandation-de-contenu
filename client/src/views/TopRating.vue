@@ -95,8 +95,9 @@ export default {
 		};
 	},
 	watch: {
-		"$route.query": () => {
-			location.reload();
+		"$route": (to, from) => {
+			if (to.path === from.path && JSON.stringify(to.query) !== JSON.stringify(from.query))
+				location.reload();
 		}
 	},
 	methods: {
@@ -116,7 +117,7 @@ export default {
 			this.$router.push({
 				name: this.$route.name,
 				query: queries,
-			}).then(() => location.reload()); // Force refresh
+			});
 		}
 	},
 	async beforeMount() {

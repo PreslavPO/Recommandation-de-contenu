@@ -27,7 +27,6 @@
 					:score="userRating || -1"
 					:movie-id="movie.id"
 					:movie-title="movie.title"
-					@set-score="setNewScore"
 				/>
 			</div>
 		</div>
@@ -60,16 +59,6 @@ export default {
 			userRating: -1,
 		}
 	},
-	methods: {
-		async setNewScore(score) {
-			this.$store.dispatch("setRating", { "movieId": this.movie.id, score })
-				.then((res) => {
-					console.log(res.message);
-					this.userRating = score;
-				})
-				.catch((err) => console.error(err));
-		}
-	},
 	async created() {
 		const base_url = "https://image.tmdb.org/t/p";
 
@@ -98,16 +87,6 @@ export default {
 			this.movie.poster_path,
 			"/no-poster.png"
 		);
-
-		// User Rating
-		if (this.$store.state.isLogged) {
-			this.$store.dispatch("getRating", this.movie.id)
-				.then((res) => {
-					if (res.rating)
-						this.userRating = res.rating;
-				})
-				.catch(() => this.userRating = -1);
-		}
 	},
 }
 </script>

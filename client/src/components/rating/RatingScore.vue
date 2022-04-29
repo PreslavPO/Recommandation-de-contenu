@@ -1,15 +1,15 @@
 <template>
-	<div class="score">
+	<div class="score" @click="openTab">
 		<div class="score__icon" :class="{ gold: isGlobal }">
 			<StarFillIcon />
 		</div>
 		<component
 			:is="showClickRating ? 'a' : 'div'"
-			v-on="showClickRating ? { click: openTab } : {}"
+			v-on="showClickRating ? { click: { prevent: openTab } } : {}"
 			:class="'score__details ' + (showClickRating ? 'score__click' : '')"
 		>
 			<div class="details__title">
-				<template v-if="score && score != -1">{{ score }}</template>
+				<template v-if="rating && rating != -1">{{ rating }}</template>
 				<template v-else>-</template>
 				<span v-if="isGlobal">/10</span>
 			</div>
@@ -28,11 +28,8 @@
 			</template>
 			<template #body>
 				<RatingStars
-					:score="score"
-					@set-score="(newScore) => {
-						$emit('setScore', newScore);
-						this.scoreData = newScore;
-					}"
+					:score="rating"
+					@set-score="setNewScore"
 				/>
 			</template>
 		</Modal>
@@ -57,21 +54,42 @@ export default {
 		movieId: Number,
 		movieTitle: String,
 	},
-	emits: ["setScore"],
 	data() {
 		return {
 			showModal: false,
-			scoreData: -1,
+			rating: -1,
 			showClickRating: false,
 		}
 	},
 	methods: {
 		openTab() {
+			console.log("openTab");
 			this.showModal = true;
 		},
+		async setNewScore(score) {
+			this.$store.dispatch("setRating", { "movieId": this.$props.movieId, score })
+				.then((res) => {
+					console.log(res.message);
+					this.userRating = score;
+				})
+				.catch((err) => console.error(err));
+		}
 	},
 	created() {
 		this.showClickRating = !this.isGlobal && this.$store.state.isLogged;
+
+		// User Rating
+		if (!this.isGlobal && this.$store.state.isLogged) {
+			this.$store.dispatch("getRating", this.movieId)
+				.then((res) => {
+					if (res.rating)
+						this.rating = res.rating;
+				})
+				.catch(() => this.rating = -1);
+		}
+		else {
+			this.rating = this.score;
+		}
 	},
 }
 </script>

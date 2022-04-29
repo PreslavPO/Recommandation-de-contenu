@@ -19,7 +19,7 @@
 			<p class="overview-text">{{ movie.overview }}</p>
 			<div class="score-list">
 				<RatingScore :is-global="true" :score="movie.score" :vote-count="movie.vote_count" />
-				<RatingScore :is-global="false" :score="movie.userScore" />
+				<RatingScore :is-global="false" :score="-1" :movie-id="movie.id" :movie-title="movie.title" />
 			</div>
 		</div>
 	</div>
@@ -60,6 +60,7 @@ export default {
 		document.title = `${movieData.title} — TheMoviesualizer`;
 
 		let movieComputed = {};
+		movieComputed.id = movieData.id;
 		movieComputed.title = movieData.title;
 		movieComputed.score = movieData.vote_average;
 		movieComputed.vote_count = movieData.vote_count;

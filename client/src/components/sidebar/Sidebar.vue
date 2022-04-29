@@ -7,7 +7,7 @@
 			<hr />
 			<SidebarLink to="/settings" text="Settings"><GearIcon /></SidebarLink>
 		</ul>
-		<div class="profile">
+		<div class="bottom">
 			<SidebarLink to="/profile" :text="$store.state.user.username || 'Login or Sign Up'">👤</SidebarLink>
 		</div>
 	</header>
@@ -56,7 +56,7 @@ export default {
 			background: transparent;
 		}
 	}
-	.profile {
+	.bottom {
 		display: flex;
 		flex: 0 0 auto;
 	}

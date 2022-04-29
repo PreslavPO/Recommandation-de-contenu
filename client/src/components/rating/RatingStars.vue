@@ -7,7 +7,7 @@
 		ref="ratingStars"
 	>
 		<div class="empty-stars">
-			<span v-for="i in 5" :key="i" class="star">
+			<span v-for="i in 5" :key="i" class="star" :style="{'width': smallStar ? '30px' : ''}">
 				<StarEmptyIcon />
 			</span>
 		</div>
@@ -18,12 +18,12 @@
 					(percentageSize > 0 ? percentageSize : (score > 0 ? getPercentageByScore(score) : 0)) + '%'
 			}"
 		>
-			<span v-for="i in 5" :key="i" class="star">
+			<span v-for="i in 5" :key="i" class="star" :style="{'width': smallStar ? '30px' : ''}">
 				<StarFillIcon />
 			</span>
 		</div>
 	</div>
-	<p>
+	<p v-if="!smallStar">
 		{{ [
 		"",
 		"Awful",
@@ -52,7 +52,9 @@ export default {
 	},
 	props: {
 		score: Number,
+		smallStar: Boolean,
 	},
+	emits: ["setScore"],
 	data() {
 		return {
 			NB_HALF_STAR: 10,
@@ -117,7 +119,7 @@ export default {
 	.star {
 		display: inline-block;
 		width: 40px;
-		height: 40px;
+		//height: 40px;
 		svg {
 			width: 100%;
 			height: 100%;

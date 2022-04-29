@@ -318,16 +318,13 @@ paths:
           $ref: "#/components/responses/Error-401"
         "404":
           $ref: "#/components/responses/Error-404"
-  /user/signup:
+  "/user/signup":
     post:
       tags:
         - user
       summary: Create user
-      description: This can only be done by the logged in user.
-      operationId: createUser
-      responses:
-        default:
-          description: successful operation
+      description: Sign up by creating and new user.
+      operationId: POST_user-signup
       requestBody:
         content:
           application/json:
@@ -342,6 +339,236 @@ paths:
                   type: string
         description: Created user object
         required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          $ref: "#/components/responses/Error-404"
+  "/user/login":
+    post:
+      tags:
+        - user
+      summary: Remove user session
+      description: This can only be done by the logged in user.
+      operationId: POST_user-login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+        description: Created user object
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          $ref: "#/components/responses/Error-401"
+        "404":
+          $ref: "#/components/responses/Error-404"
+  "/user/logout":
+    post:
+      tags:
+        - user
+      summary: Remove user session
+      description: This can only be done by the logged in user.
+      operationId: POST_user-logout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+        description: Created user object
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/Error-401"
+  "/user/session":
+    get:
+      tags:
+        - user
+      summary: Check if user connected
+      description: Check if user is connected by checking user session
+      operationId: GET_user-session
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  login:
+                    type: boolean
+                  user:
+                    $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Error-401"
+  "/user/rating/{movieId}":
+    get:
+      tags:
+        - user
+      summary: Get user rating
+      description: Get user rating about a movie
+      operationId: GET_user-rating-movieId
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          in: query
+          description: "Value of the rating you want to submit"
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  movieId:
+                    type: string
+                  rating:
+                    type: integer
+        "400":
+          $ref: "#/components/responses/Error-401"
+        "404":
+          $ref: "#/components/responses/Error-404"
+    post:
+      tags:
+        - user
+      summary: Set user rating
+      description: Set new user rating about a movie
+      operationId: POST_user-rating-movieId
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          in: query
+          description: "Value of the rating you want to submit"
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                score:
+                  type: integer
+                  minimum: 1
+                  maximum: 10
+        description: "Value of the rating you want to submit."
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/Error-401"
+        "401":
+          $ref: "#/components/responses/Error-401"
+  "/user/rating/":
+    get:
+      tags:
+        - user
+      summary: Get movies rated by a user
+      description: Get movies rated by a user
+      operationId: GET_user-rating
+      parameters:
+        - name: userId
+          in: query
+          description: "Value of the rating you want to submit"
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: page
+          description: "Specify which page to query"
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: sort_by
+          description: "Sort by option choosed"
+          schema:
+            type: string
+            enum:
+              - rating.asc
+              - rating.desc
+              - last_rated
+            default: last_rated
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    example: 1
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Movie"
+                  total_results:
+                    type: integer
+                  total_pages:
+                    type: integer
+        "400":
+          $ref: "#/components/responses/Error-401"
+        "404":
+          $ref: "#/components/responses/Error-404"
 components:
   schemas:
     User:
@@ -537,8 +764,6 @@ components:
     Error:
       type: object
       properties:
-        code:
-          type: integer
         message:
           type: string
   responses:

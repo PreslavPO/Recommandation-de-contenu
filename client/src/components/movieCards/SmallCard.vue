@@ -1,18 +1,27 @@
 <template>
 	<div class="smallCard">
-		<router-link :to="'/movie/' + id" class="smallCard__poster">
-			<img :src="poster_path" :alt="'poster of ' + title">
+		<router-link :to="'/movie/' + movie.id" class="smallCard__poster">
+			<img :src="movie.poster_path" :alt="'poster of ' + movie.title">
 		</router-link>
 		<div class="smallCard__info">
 			<div class="smallCard__subtitle">
-				<div class="smallCard__score">
-					<StarFillIcon />
-					<span>{{ score }}</span>
-				</div>
-				<span>{{ date }}</span>
+				<template v-if="!hasRating">
+					<div class="smallCard__score">
+						<StarFillIcon />
+						<span>{{ movie.vote_average }}</span>
+					</div>
+					<span>{{ date }}</span>
+				</template>
+				<template v-else>
+					<RatingStars
+						:score="userRating || -1"
+						:smallStar="true"
+						@set-score="setNewScore"
+					/>
+				</template>
 			</div>
-			<router-link :to="'/movie/' + id" class="smallCard__link--title">
-				<h5>{{ title }}</h5>
+			<router-link :to="'/movie/' + movie.id" class="smallCard__link--title">
+				<h5>{{ movie.title }}</h5>
 			</router-link>
 		</div>
 	</div>
@@ -20,28 +29,75 @@
 
 <script>
 import StarFillIcon from "@/components/icons/StarFillIcon.vue";
+import RatingStars from "@/components/rating/RatingStars.vue";
 
 export default {
 	name: "SmallCard",
+	props: {
+		hasRating: Boolean,
+		movie: {
+			id: Number,
+			title: String,
+			poster_path: String,
+			release_date: Date,
+			vote_average: Number,
+		},
+	},
 	components: {
 		StarFillIcon,
+		RatingStars,
 	},
 	data() {
 		return {
-			id: "183",
-			title: "Interstellar",
-			poster_path: "",
-			date: new Date(),
-			score: 8.2,
+			userRating: -1,
+			date: "--/--/----",
 		}
 	},
-	mounted() {
+	methods: {
+		async setNewScore(score) {
+			this.$store.dispatch("setRating", { "movieId": this.movie.id, score })
+				.then((res) => {
+					console.log(res.message);
+					this.userRating = score;
+				})
+				.catch((err) => console.error(err));
+		}
+	},
+	async created() {
+		const base_url = "https://image.tmdb.org/t/p";
+
+		/**
+		 * Get image if correct path or else get default image
+		 */
+		const getThumbnail = (name, imgDefault) => {
+			return new Promise((resolve, reject) => {
+				let imageUrl = `${base_url}/w500${name}`;
+				let image = new Image();
+
+				image.onload = () => resolve(imageUrl);
+				image.onerror = () => resolve(imgDefault);
+				image.src = imageUrl;
+			});
+		}
+		
 		// Convert date
-		this.date = this.date.getFullYear();
+		this.movie.release_date = new Date(this.movie.release_date).toLocaleDateString();
 
 		// Images Path
-		const base_url = "https://image.tmdb.org/t/p";
-		this.poster_path = `${base_url}/w500/1pnigkWWy8W032o9TKDneBa3eVK.jpg`;
+		this.movie.poster_path = await getThumbnail(
+			this.movie.poster_path,
+			"/no-poster.png"
+		);
+
+		// User Rating
+		if (this.$store.state.isLogged) {
+			this.$store.dispatch("getRating", this.movie.id)
+				.then((res) => {
+					if (res.rating)
+						this.userRating = res.rating;
+				})
+				.catch(() => this.userRating = -1);
+		}
 	},
 }
 </script>

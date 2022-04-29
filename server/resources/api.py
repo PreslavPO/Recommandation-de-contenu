@@ -1,7 +1,8 @@
 from flask import jsonify, request
 from flask_restful import Resource
 from bson import json_util
-from src.weighted_rating.top_rating import get_top_rating, get_page_of_movies, get_nb_movies, get_nb_pages
+from src.weighted_rating.top_rating import get_top_rating
+from src.utils import get_page_of_movies, get_nb_movies, get_nb_pages
 import json
 from config import db
 
@@ -64,7 +65,7 @@ class ListMovies(Resource):
 			result_movies = result_movies.sort_values(sort_value, ascending=False)
 		
 		# List of movie ids
-		idTopList = get_page_of_movies(result_movies, page).tolist()
+		idTopList = get_page_of_movies(result_movies, page)["id"].astype(int).tolist()
 
 		# Get all movies corresponding to the list of ids
 		data = db.movies.find({ "id": { "$in": idTopList } })

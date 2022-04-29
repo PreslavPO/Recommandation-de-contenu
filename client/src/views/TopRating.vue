@@ -140,9 +140,8 @@ export default {
 <style lang="scss">
 @import "@/assets/variables.scss";
 
-$element-space: 75px;
 .top-movie {
-	margin: $element-space;
+	margin: $margin-page;
 	h1 {
 		margin: 0;
 		margin-bottom: 15px;

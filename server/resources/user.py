@@ -16,9 +16,9 @@ class SignUp(Resource):
 	def post(self):
 		return User().signup()
 
-class SignOut(Resource):
+class Logout(Resource):
 	def post(self):
-		return User().signout()
+		return User().logout()
 
 class Login(Resource):
 	def post(self):
@@ -28,14 +28,17 @@ class CheckSession(Resource):
 	def get(self):
 		return User().check_session();
 
-class UserRatingMovie(Resource):
-	method_decorators = [login_required]
-
-	def get(self, userId, movieId):
-		return User().get_rating(userId, movieId)
-
 class UserRating(Resource):
 	method_decorators = [login_required]
 
-	def post(self, userId):
-		return User().set_rating(userId)
+	def get(self, movieId):
+		return User().get_rating(movieId)
+
+	def post(self, movieId):
+		return User().set_rating(movieId)
+
+class UserRatingMovies(Resource):
+	method_decorators = [login_required]
+
+	def get(self):
+		return User().get_movies()

@@ -29,9 +29,8 @@ export default {
 <style lang="scss">
 @import "../assets/variables.scss";
 
-$element-space: 75px;
 .home {
-	margin: $element-space;
+	margin: $margin-page;
 	h3 {
 		margin: 0;
 	}

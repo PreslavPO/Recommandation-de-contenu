@@ -1,7 +1,4 @@
 import pandas as pd
-import math
-
-MOVIES_BY_PAGES = 15
 
 movies_metadata = pd.read_csv("./data/movies_metadata.csv", low_memory=False)
 
@@ -31,18 +28,3 @@ def get_top_rating():
 	q_movies["release_date"] = pd.to_datetime(q_movies["release_date"])
 	
 	return q_movies
-
-def get_page_of_movies(movies, page=1):
-	# La numérotation commence à 1 => 2 = 2ème page
-	page = page-1
-
-	# Les ids des films du top de la page sélectionné
-	return movies[page*MOVIES_BY_PAGES:page*MOVIES_BY_PAGES+MOVIES_BY_PAGES]["id"].astype(int)
-
-# Le nombre total de films retenu
-def get_nb_movies(movies):
-	return movies.shape[0]
-
-# Le nombre total de pages retenu
-def get_nb_pages(movies):
-	return int(math.ceil(movies.shape[0] / MOVIES_BY_PAGES))

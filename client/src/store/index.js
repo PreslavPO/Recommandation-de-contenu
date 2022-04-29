@@ -17,6 +17,10 @@ export default createStore({
 		},
 	},
 	actions: {
+		signout(context) {
+			context.commit("LOGGED_OUT");
+			axios.post("/user/signout");
+		},
 		requestWithCredentials(context, axiosReq) {
 			return new Promise((resolve, reject) => {
 				axiosReq
@@ -39,13 +43,22 @@ export default createStore({
 		getRating(context, movieId) {
 			return context.dispatch(
 				"requestWithCredentials",
-				axios.get(`/user/${context.state.user._id}/rating/${movieId}`)
+				axios.get(`/user/rating/${movieId}?userId=${context.state.user._id}`)
 			);
 		},
 		setRating(context, { movieId, score }) {
 			return context.dispatch(
 				"requestWithCredentials",
-				axios.post(`/user/${context.state.user._id}/rating`, { movieId, score })
+				axios.post(`/user/rating/${movieId}?userId=${context.state.user._id}`, { score })
+			);
+		},
+		getListRating(context, { page, sort_by }) {
+			if (!page) page = 1
+			if (!sort_by) sort_by = "last_rated"
+			
+			return context.dispatch(
+				"requestWithCredentials",
+				axios.get(`/user/rating/?userId=${context.state.user._id}&page=${page}&sort_by=${sort_by}`)
 			);
 		},
 	},

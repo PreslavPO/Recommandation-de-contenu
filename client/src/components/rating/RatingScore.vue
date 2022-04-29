@@ -4,9 +4,9 @@
 			<StarFillIcon />
 		</div>
 		<component
-			:is="isGlobal ? 'div' : 'a'"
-			v-on="!isGlobal ? { click: openTab } : {}"
-			:class="'score__details ' + (isGlobal ? '' : 'score__click')"
+			:is="showClickRating ? 'a' : 'div'"
+			v-on="showClickRating ? { click: openTab } : {}"
+			:class="'score__details ' + (showClickRating ? 'score__click' : '')"
 		>
 			<div class="details__title">
 				<template v-if="score && score != -1">{{ score }}</template>
@@ -21,7 +21,7 @@
 		</component>
 	</div>
 
-	<Teleport to="div#main" v-if="!isGlobal">
+	<Teleport to="div#main" v-if="showClickRating">
 		<Modal :show="showModal" @close="showModal = false">
 			<template #header>
 				<h3>{{ movieTitle }}</h3>
@@ -62,12 +62,16 @@ export default {
 		return {
 			showModal: false,
 			scoreData: -1,
+			showClickRating: false,
 		}
 	},
 	methods: {
 		openTab() {
 			this.showModal = true;
 		},
+	},
+	created() {
+		this.showClickRating = !this.isGlobal && this.$store.state.isLogged;
 	},
 }
 </script>

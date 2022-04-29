@@ -100,12 +100,14 @@ export default {
 		);
 
 		// User Rating
-		this.$store.dispatch("getRating", this.movie.id)
-			.then((res) => {
-				if (res.rating)
-					this.userRating = res.rating;
-			})
-			.catch(() => this.userRating = -1);
+		if (this.$store.state.isLogged) {
+			this.$store.dispatch("getRating", this.movie.id)
+				.then((res) => {
+					if (res.rating)
+						this.userRating = res.rating;
+				})
+				.catch(() => this.userRating = -1);
+		}
 	},
 }
 </script>

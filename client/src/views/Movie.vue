@@ -33,7 +33,6 @@ export default {
 <style lang="scss">
 @import "@/assets/variables.scss";
 
-$element-space: 75px;
 .background {
 	display: flex;
 	align-items: center;
@@ -52,7 +51,7 @@ $poster-width: 350px;
 .header {
 	position: relative;
 	margin: 0 $margin-content;
-	margin-bottom: $element-space;
+	margin-bottom: $margin-page;
 	&__poster {
 		position: absolute;
 		bottom: 0;
@@ -113,7 +112,7 @@ $cast-spacing: 10px;
 	flex-direction: column;
 	justify-content: space-between;
 	margin: 0 $margin-content;
-	margin-bottom: $element-space;
+	margin-bottom: $margin-page;
 	.first-column {
 		display: flex;
 		flex-direction: row;

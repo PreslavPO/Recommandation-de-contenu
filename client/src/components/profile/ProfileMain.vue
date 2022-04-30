@@ -14,19 +14,19 @@
 			<h2>Contribution</h2>
 			<div class="contribution">
 				<div class="contribution__group">
-					<span class="contribution__number">-</span>
+					<span class="contribution__number">{{ nbMovieRated }}</span>
 					<span class="contribution__title">Movie rated</span>
 				</div>
 				<div class="contribution__group">
-					<span class="contribution__number">-</span>
-					<span class="contribution__title">Rating over 5</span>
+					<span class="contribution__number">{{ nbRatedOver5 }}</span>
+					<span class="contribution__title">Rating >= 5</span>
 				</div>
 				<div class="contribution__group">
-					<span class="contribution__number">-</span>
-					<span class="contribution__title">Rating under 5</span>
+					<span class="contribution__number">{{ nbRatedUnder5 }}</span>
+					<span class="contribution__title">{{ "Rating < 5" }}</span>
 				</div>
 				<div class="contribution__group">
-					<span class="contribution__number">-</span>
+					<span class="contribution__number">{{ averageRating }}</span>
 					<span class="contribution__title">Average rating</span>
 				</div>
 			</div>
@@ -52,11 +52,30 @@ export default {
 	components: {
 		ProfileMovieList,
 	},
+	data() {
+		return {
+			nbMovieRated: 0,
+			nbRatedOver5: 0,
+			nbRatedUnder5: 0,
+			averageRating: 0,
+		}
+	},
 	methods: {
 		async logout() {
 			this.$store.dispatch("logout");
 		}
-	}
+	},
+	async mounted() {
+		let informationUser = await this.$store.dispatch("getInformation");
+		console.log(informationUser);
+		informationUser.ratings.forEach((elt) => {
+			this.nbMovieRated++;
+			if (elt.rating >= 5) this.nbRatedOver5++;
+			if (elt.rating < 5) this.nbRatedUnder5++;
+			this.averageRating += elt.rating;
+		});
+		this.averageRating = Math.round((this.averageRating / informationUser.ratings.length) * 100) / 100;
+	},
 }
 </script>
 

@@ -69,6 +69,12 @@ export default createStore({
 				axios.get(`/user/recommendation?userId=${context.state.user._id}&page=${page}`)
 			);
 		},
+		getInformation(context) {
+			return context.dispatch(
+				"requestWithCredentials",
+				axios.get(`/user/information?userId=${context.state.user._id}`)
+			);
+		},
 	},
 	modules: {
 	},

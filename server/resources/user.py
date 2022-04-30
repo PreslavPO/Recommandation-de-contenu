@@ -48,3 +48,9 @@ class UserRecommendation(Resource):
 
 	def get(self):
 		return User().getRecommendation()
+
+class UserInformation(Resource):
+	method_decorators = [login_required]
+
+	def get(self):
+		return User().getInformation()

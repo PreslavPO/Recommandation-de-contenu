@@ -2,6 +2,7 @@
 	<div class="profile-movie-list-container">
 		<h3>Similar movies</h3>
 		<ul class="profile-movie-list">
+			<span class="no-movie" v-if="movieList.length == 0">No movie recommended.</span>
 			<li class="profile-movie-item" v-for="movie in movieList.result" :key="movie.id">
 				<SmallCard v-if="movie" :movie="movie" :hasRating="false" />
 			</li>

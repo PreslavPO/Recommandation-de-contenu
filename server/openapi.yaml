@@ -656,6 +656,46 @@ paths:
           $ref: "#/components/responses/Error-401"
         "404":
           $ref: "#/components/responses/Error-404"
+  "/user/information":
+    get:
+      tags:
+        - user
+      summary: Get user information
+      description: Get profile information about a user
+      operationId: GET_user-information
+      parameters:
+        - name: userId
+          in: query
+          description: "Id of the user to get data from"
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ratings:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        movieId:
+                          type: integer
+                        rating:
+                          type: integer
+                        timestamp:
+                          type: string
+                          format: date
+        "400":
+          $ref: "#/components/responses/Error-401"
+        "401":
+          $ref: "#/components/responses/Error-401"
+        "404":
+          $ref: "#/components/responses/Error-404"
 components:
   schemas:
     User:

@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, redirect, request, session, make_response, redirect
 from config import db
 from bson import json_util
-from src.utils import get_page_of_movies, get_nb_movies, get_nb_pages
+from src.utils import get_page_of_movies, get_nb_movies, get_nb_pages, MOVIES_BY_PAGES
 from src.collaborative_filtering.recommendation import get_collaborative_recommendation, get_trainset
 import pandas as pd
 import bcrypt
@@ -187,6 +187,13 @@ class User:
 		data = db.movies.find({ "id": { "$in": idTopList } })
 		json_data = json.loads(json_util.dumps(data))
 
+		compteur = 1
+		while len(json_data) < MOVIES_BY_PAGES*3: # x2 to artificially increase the amount of movies showed
+			idTopList.extend(get_page_of_movies(result_movies[0], page+compteur).astype(int).tolist())
+			data = db.movies.find({ "id": { "$in": idTopList } })
+			json_data.extend(json.loads(json_util.dumps(data)))
+			compteur += 1
+
 		# Sort to correspond original id sort (mongodb shuffle the list)
 		json_data_sorted = []
 		for movieId in idTopList:
@@ -204,3 +211,8 @@ class User:
 			}, 200
 
 		return { "message": "Movie list not found" }, 404
+	
+	def getInformation(self):
+		userId = request.args.get("userId")
+		user_ratings = db.users.find_one({ "_id": userId }, {"_id": 0, "ratings": 1})
+		return json.loads(json_util.dumps(user_ratings)), 200

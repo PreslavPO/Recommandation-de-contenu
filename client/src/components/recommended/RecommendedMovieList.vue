@@ -54,7 +54,7 @@ export default {
 		list-style: none;
 	}
 	&-movie-item {
-		margin: 0 auto;
+		margin: 20px auto;
 	}
 }
 

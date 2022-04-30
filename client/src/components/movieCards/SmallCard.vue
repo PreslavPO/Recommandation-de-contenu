@@ -69,7 +69,7 @@ export default {
 			return str.split('/').reverse().join('/');
 		},
 	},
-	async created() {
+	async mounted() {
 		const base_url = "https://image.tmdb.org/t/p";
 
 		/**

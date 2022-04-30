@@ -1,6 +1,6 @@
 import pandas as pd
 import pickle
-from surprise import Reader, Dataset, SVD
+from surprise import Reader, Dataset, SVD, KNNWithMeans
 
 # Renvoie les id des nb_films films les mieux notés pour l'user user_id selon notre algo
 def films_mieux_notes_par_l_user(algo, trainset, user_id):
@@ -22,19 +22,11 @@ def get_trainset(userId, ratings):
 	# Divide ratings by 2 because entry ratings is /10 but ratings wanted is /5
 	user_ratings["rating"] = user_ratings["rating"].div(2).round(1)
 
-	print("-------------- user_ratings --------------")
-	print(user_ratings)
-	print("------------------------------------------")
-
 	# Add ratings to the global ratings
 	global_ratings = pd.read_csv("./data/ratings_small.csv", usecols=['userId', 'movieId', 'rating'], low_memory=False)
 	# Convert int to string (because userId is a string)
 	# global_ratings["userId"] = global_ratings["userId"].astype(str)
 	global_ratings = global_ratings.append(user_ratings, ignore_index=True)
-
-	print("-------------- global_ratings --------------")
-	print(global_ratings)
-	print("--------------------------------------------")
 
 	# Trainset
 	reader = Reader()
@@ -52,7 +44,13 @@ def get_trainset(userId, ratings):
 	return trainset
 
 def get_collaborative_recommendation(trainset, userId):
-	algo = SVD()
+	# algo = SVD()
+	sim_options = {
+		"name": "msd",
+		"min_support": 3,
+		"user_based": True,
+	}
+	algo = KNNWithMeans(sim_options=sim_options)
 	algo.fit(trainset)
 	# algo = None
 	# with open('./data/model.pkl', 'rb') as f:

@@ -41,6 +41,14 @@ const routes = [
 		},
 	},
 	{
+		path: "/recommended",
+		name: "Recommended",
+		component: () => import("../views/Recommended.vue"),
+		meta: {
+			title: "Recommended for you — TheMoviesualizer",
+		},
+	},
+	{
 		path: "/profile",
 		name: "Profile",
 		component: () => import("../views/Profile.vue"),

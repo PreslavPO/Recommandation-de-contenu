@@ -50,7 +50,7 @@ export default {
 	data() {
 		return {
 			userRating: -1,
-			date: "--/--/----",
+			date: "----",
 		}
 	},
 	methods: {
@@ -61,7 +61,13 @@ export default {
 					this.userRating = score;
 				})
 				.catch((err) => console.error(err));
-		}
+		},
+		isValidDate(d) {
+			return d instanceof Date && !isNaN(d);
+		},
+		convertDigitIn(str){
+			return str.split('/').reverse().join('/');
+		},
 	},
 	async created() {
 		const base_url = "https://image.tmdb.org/t/p";
@@ -81,7 +87,13 @@ export default {
 		}
 		
 		// Convert date
-		this.movie.release_date = new Date(this.movie.release_date).toLocaleDateString();
+		const tempDate = new Date(this.movie.release_date);
+		if (this.isValidDate(tempDate)) {
+			this.date = tempDate.getFullYear();
+		}
+		else {
+			this.date = new Date(this.convertDigitIn(this.movie.release_date)).getFullYear();
+		}
 
 		// Images Path
 		this.movie.poster_path = await getThumbnail(

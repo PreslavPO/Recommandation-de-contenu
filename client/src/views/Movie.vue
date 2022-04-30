@@ -15,17 +15,27 @@
 			Loading...
 		</template>
 	</Suspense>
+	<Suspense>
+		<template #default>
+			<MovieRecommended />
+		</template>
+		<template #fallback>
+			Loading...
+		</template>
+	</Suspense>
 </template>
 
 <script>
 import MovieMain from "@/components/movieDetails/MovieMain.vue";
 import MovieCast from "@/components/movieDetails/MovieCast.vue"
+import MovieRecommended from "@/components/movieDetails/MovieRecommended.vue"
 
 export default {
 	name: "Movie",
 	components: {
 		MovieMain,
 		MovieCast,
+		MovieRecommended,
 	},
 }
 </script>

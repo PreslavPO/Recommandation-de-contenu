@@ -17,9 +17,9 @@ export default createStore({
 		},
 	},
 	actions: {
-		signout(context) {
+		logout(context) {
 			context.commit("LOGGED_OUT");
-			axios.post("/user/signout");
+			axios.post("/user/logout");
 		},
 		requestWithCredentials(context, axiosReq) {
 			return new Promise((resolve, reject) => {
@@ -58,7 +58,15 @@ export default createStore({
 			
 			return context.dispatch(
 				"requestWithCredentials",
-				axios.get(`/user/rating/?userId=${context.state.user._id}&page=${page}&sort_by=${sort_by}`)
+				axios.get(`/user/rating?userId=${context.state.user._id}&page=${page}&sort_by=${sort_by}`)
+			);
+		},
+		getRecommendation(context, page) {
+			if (!page) page = 1
+			
+			return context.dispatch(
+				"requestWithCredentials",
+				axios.get(`/user/recommendation?userId=${context.state.user._id}&page=${page}`)
 			);
 		},
 	},

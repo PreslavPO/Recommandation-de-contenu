@@ -110,7 +110,9 @@ export default {
 		creditsComputed.person_cast = creditsData.cast;
 		creditsComputed.person_crew = creditsData.crew;
 		
-		creditsComputed.person_cast = creditsData.cast.map(async p => {
+		// Get the first 18 values
+		creditsComputed.person_cast = creditsData.cast.slice(0, 18);
+		creditsComputed.person_cast = creditsComputed.person_cast.map(async p => {
 			let newPerson = p;
 			newPerson.profile_path = await getThumbnail(
 				p.profile_path,

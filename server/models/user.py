@@ -2,6 +2,7 @@ from flask import Flask, jsonify, redirect, request, session, make_response, red
 from config import db
 from bson import json_util
 from src.utils import get_page_of_movies, get_nb_movies, get_nb_pages
+from src.collaborative_filtering.recommendation import get_collaborative_recommendation, get_trainset
 import pandas as pd
 import bcrypt
 import uuid
@@ -133,6 +134,48 @@ class User:
 
 		# List of movie ids
 		idTopList = get_page_of_movies(result_movies, page)["movieId"].astype(int).tolist()
+
+		# Get all movies corresponding to the list of ids
+		data = db.movies.find({ "id": { "$in": idTopList } })
+		json_data = json.loads(json_util.dumps(data))
+
+		# Sort to correspond original id sort (mongodb shuffle the list)
+		json_data_sorted = []
+		for movieId in idTopList:
+			for doc in json_data:
+				if movieId == doc["id"]:
+					json_data_sorted.append(doc)
+					break;
+
+		if (data != None):
+			return {
+				"page": page,
+				"result": json_data_sorted,
+				"total_results": get_nb_movies(result_movies),
+				"total_pages": get_nb_pages(result_movies)
+			}, 200
+
+		return { "message": "Movie list not found" }, 404
+	
+	def getRecommendation(self):
+		userId = request.args.get("userId")
+		page = int(request.args.get("page", 1))
+
+		# Find user document
+		user = db.users.find_one({ "_id": userId })
+
+		# Get the trainset
+		trainset = get_trainset(userId, list(user["ratings"]))
+
+		# Get collaborative
+		result_movies = get_collaborative_recommendation(trainset, userId)
+		result_movies = pd.DataFrame(result_movies)
+		print("-------------- Resultat --------------")
+		print(result_movies)
+		print("--------------------------------------")
+
+		# List of movie ids
+		idTopList = get_page_of_movies(result_movies[0], page).astype(int).tolist()
 
 		# Get all movies corresponding to the list of ids
 		data = db.movies.find({ "id": { "$in": idTopList } })

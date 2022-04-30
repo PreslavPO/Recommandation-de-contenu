@@ -1,8 +1,9 @@
 from flask import jsonify, request
 from flask_restful import Resource
 from bson import json_util
-from src.weighted_rating.top_rating import get_top_rating
 from src.utils import get_page_of_movies, get_nb_movies, get_nb_pages
+from src.weighted_rating.top_rating import get_top_rating
+from src.content_based.recommendation_content import get_movies_recommendations
 import json
 from config import db
 
@@ -144,3 +145,33 @@ class Languages(Resource):
 			response.status_code = 200
 			return response
 		return { "message": "Languages were not found" }, 404
+
+class MovieRecommendation(Resource):
+	def get(self, movieId):
+		page = int(request.args.get("page", 1))
+
+		# Get movie list
+		result_movies = get_movies_recommendations(movieId)
+
+		# List of movie ids
+		idTopList = get_page_of_movies(result_movies, page).astype(int).tolist()
+
+		# Get all movies corresponding to the list of ids
+		data = db.movies.find({ "id": { "$in": idTopList } })
+		json_data = json.loads(json_util.dumps(data))
+
+		# Sort to correspond original id sort (mongodb shuffle the list)
+		json_data_sorted = []
+		for movieId in idTopList:
+			for doc in json_data:
+				if movieId == doc["id"]:
+					json_data_sorted.append(doc)
+					break;
+
+		if (data != None):
+			return {
+				"page": page,
+				"result": json_data_sorted,
+				"total_results": get_nb_movies(result_movies),
+				"total_pages": get_nb_pages(result_movies)
+			}, 200

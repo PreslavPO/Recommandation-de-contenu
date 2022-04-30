@@ -42,3 +42,9 @@ class UserRatingMovies(Resource):
 
 	def get(self):
 		return User().get_movies()
+
+class UserRecommendation(Resource):
+	method_decorators = [login_required]
+
+	def get(self):
+		return User().getRecommendation()

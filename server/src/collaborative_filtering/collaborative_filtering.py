@@ -10,9 +10,9 @@ from sklearn import metrics
 import pickle
 import matplotlib.pyplot as plt
 
-movies_metadata = pd.read_csv("../../Data/movies_metadata.csv", low_memory=False)
-ratings = pd.read_csv("../../Data/ratings_small.csv", low_memory=False)
-links = pd.read_csv("../../Data/links.csv", low_memory=False)
+movies_metadata = pd.read_csv("../../data/movies_metadata.csv", low_memory=False)
+ratings = pd.read_csv("../../data/ratings_small.csv", low_memory=False)
+links = pd.read_csv("../../data/links.csv", low_memory=False)
 
 # Pour faire du collaborative filtering, il y a 3 étapes :
 # 1. Trouver quels utilisateurs sont similaires entre eux (ou quels films si on fait du item-based)
@@ -66,7 +66,7 @@ algo.fit(trainset)
 #predictions = algo.test(testset)
 
 # Enregistre avec pickle le modèle
-with open('../../Data/model.pkl', 'wb') as f:
+with open('../../data/model.pkl', 'wb') as f:
     pickle.dump(algo, f)
 
 # Pour récupérer le modèle depuis le fichier model.pkl :
@@ -165,7 +165,7 @@ print(recup_titres(predicted))
 # Ici on avait le meilleur score pour name = msd, min_support = 3 et user_based = True
 
 
-with open('../../Data/pred.pkl', 'rb') as f:
+with open('../../data/pred.pkl', 'rb') as f:
     predictions = pickle.load(f)
 
 

@@ -318,6 +318,48 @@ paths:
           $ref: "#/components/responses/Error-401"
         "404":
           $ref: "#/components/responses/Error-404"
+  "/api/movie/{movieId}/recommendation":
+    get:
+      tags:
+        - api
+      summary: Get recommendation of a movie
+      description: Get movies similar to the movie specified.
+      operationId: GET_movie-movie_id-recommendation
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: page
+          description: "Specify which page to query"
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    example: 1
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Movie"
+                  total_results:
+                    type: integer
+                  total_pages:
+                    type: integer
+        "400":
+          $ref: "#/components/responses/Error-401"
+        "404":
+          $ref: "#/components/responses/Error-404"
   "/user/signup":
     post:
       tags:
@@ -452,7 +494,7 @@ paths:
             type: integer
         - name: userId
           in: query
-          description: "Value of the rating you want to submit"
+          description: "Id of the user to get data from"
           schema:
             type: string
           required: true
@@ -486,7 +528,7 @@ paths:
             type: integer
         - name: userId
           in: query
-          description: "Value of the rating you want to submit"
+          description: "Id of the user to get data from"
           schema:
             type: string
           required: true
@@ -516,7 +558,7 @@ paths:
           $ref: "#/components/responses/Error-401"
         "401":
           $ref: "#/components/responses/Error-401"
-  "/user/rating/":
+  "/user/rating":
     get:
       tags:
         - user
@@ -526,7 +568,7 @@ paths:
       parameters:
         - name: userId
           in: query
-          description: "Value of the rating you want to submit"
+          description: "Id of the user to get data from"
           schema:
             type: string
           required: true
@@ -566,6 +608,51 @@ paths:
                   total_pages:
                     type: integer
         "400":
+          $ref: "#/components/responses/Error-401"
+        "404":
+          $ref: "#/components/responses/Error-404"
+  "/user/recommendation":
+    get:
+      tags:
+        - user
+      summary: Get recommended movies
+      description: Get movies recommended to a specific user
+      operationId: GET_user-recommendation
+      parameters:
+        - name: userId
+          in: query
+          description: "Id of the user to get data from"
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: page
+          description: "Specify which page to query"
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    example: 1
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Movie"
+                  total_results:
+                    type: integer
+                  total_pages:
+                    type: integer
+        "400":
+          $ref: "#/components/responses/Error-401"
+        "401":
           $ref: "#/components/responses/Error-401"
         "404":
           $ref: "#/components/responses/Error-404"

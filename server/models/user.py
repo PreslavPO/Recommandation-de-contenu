@@ -117,46 +117,52 @@ class User:
 
 		# Get movie list
 		data = db.users.find_one({ "_id": userId })
-		result_movies = pd.DataFrame(list(data["ratings"]))
+		if (data.get("ratings")):
+			result_movies = pd.DataFrame(list(data["ratings"]))
 
-		# Value to sort
-		sort_value = ""
-		if (sort_by.startswith("rating")):
-			sort_value = "rating"
-		elif (sort_by == "last_rated"):
-			sort_value = "timestamp"
+			# Value to sort
+			sort_value = ""
+			if (sort_by.startswith("rating")):
+				sort_value = "rating"
+			elif (sort_by == "last_rated"):
+				sort_value = "timestamp"
+			
+			# Sort by descending, ascending or last rated
+			if (sort_by == "rating.asc"):
+				result_movies = result_movies.sort_values(sort_value, ascending=True)
+			else:
+				result_movies = result_movies.sort_values(sort_value, ascending=False)
+
+			# List of movie ids
+			idTopList = get_page_of_movies(result_movies, page)["movieId"].astype(int).tolist()
+
+			# Get all movies corresponding to the list of ids
+			data = db.movies.find({ "id": { "$in": idTopList } })
+			json_data = json.loads(json_util.dumps(data))
+
+			# Sort to correspond original id sort (mongodb shuffle the list)
+			json_data_sorted = []
+			for movieId in idTopList:
+				for doc in json_data:
+					if movieId == doc["id"]:
+						json_data_sorted.append(doc)
+						break;
+
+			if (data != None):
+				return {
+					"page": page,
+					"result": json_data_sorted,
+					"total_results": get_nb_movies(result_movies),
+					"total_pages": get_nb_pages(result_movies)
+				}, 200
+
+		return {
+			"page": 0,
+			"result": [],
+			"total_results": 0,
+			"total_pages": 0
+		}, 204
 		
-		# Sort by descending, ascending or last rated
-		if (sort_by == "rating.asc"):
-			result_movies = result_movies.sort_values(sort_value, ascending=True)
-		else:
-			result_movies = result_movies.sort_values(sort_value, ascending=False)
-
-		# List of movie ids
-		idTopList = get_page_of_movies(result_movies, page)["movieId"].astype(int).tolist()
-
-		# Get all movies corresponding to the list of ids
-		data = db.movies.find({ "id": { "$in": idTopList } })
-		json_data = json.loads(json_util.dumps(data))
-
-		# Sort to correspond original id sort (mongodb shuffle the list)
-		json_data_sorted = []
-		for movieId in idTopList:
-			for doc in json_data:
-				if movieId == doc["id"]:
-					json_data_sorted.append(doc)
-					break;
-
-		if (data != None):
-			return {
-				"page": page,
-				"result": json_data_sorted,
-				"total_results": get_nb_movies(result_movies),
-				"total_pages": get_nb_pages(result_movies)
-			}, 200
-
-		return { "message": "Movie list not found" }, 404
-	
 	def getRecommendation(self):
 		userId = request.args.get("userId")
 		page = int(request.args.get("page", 1))

@@ -1,6 +1,7 @@
 <template>
 	<div class="profile-movie-list-container">
 		<ul class="profile-movie-list">
+			<span class="no-movie" v-if="movieList.length == 0">No movie rated yet.</span>
 			<li class="profile-movie-item" v-for="movie in movieList.result" :key="movie.id">
 				<SmallCard v-if="movie" :movie="movie" :hasRating="true" />
 			</li>
@@ -18,7 +19,7 @@ export default {
 	components: {
 		SmallCard,
 	},
-	async setup(props) {
+	async setup() {
 		const store = useStore();
 		let movieList = ref(null);
 
@@ -48,6 +49,9 @@ export default {
 .profile {
 	&-movie-list-container {
 		margin-top: 20px;
+		.no-movie {
+			color: $font2-color;
+		}
 	}
 	&-movie-list {
 		display: grid;

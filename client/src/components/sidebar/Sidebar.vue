@@ -8,7 +8,7 @@
 			<SidebarLink to="/settings" text="Settings"><GearIcon /></SidebarLink>
 		</ul>
 		<div class="bottom">
-			<SidebarLink to="/profile" :text="$store.state.user.username || 'Login or Sign Up'">👤</SidebarLink>
+			<SidebarLink to="/profile" :text="$store.state.user.username || 'Login or Sign Up'"><UserBoxIcon /></SidebarLink>
 		</div>
 	</header>
 </template>
@@ -19,6 +19,7 @@ import HomeIcon from "../icons/HomeIcon.vue";
 import TicketIcon from "../icons/TicketIcon.vue";
 import CandlestickIcon from "../icons/CandlestickIcon.vue";
 import GearIcon from "../icons/GearIcon.vue";
+import UserBoxIcon from "../icons/UserBoxIcon.vue";
 
 export default {
 	components: {
@@ -27,6 +28,7 @@ export default {
 		TicketIcon,
 		CandlestickIcon,
 		GearIcon,
+		UserBoxIcon,
 	}
 }
 </script>

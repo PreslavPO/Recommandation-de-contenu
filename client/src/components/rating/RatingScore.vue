@@ -69,7 +69,7 @@ export default {
 			this.$store.dispatch("setRating", { "movieId": this.$props.movieId, score })
 				.then((res) => {
 					console.log(res.message);
-					this.userRating = score;
+					this.rating = score;
 				})
 				.catch((err) => console.error(err));
 		}

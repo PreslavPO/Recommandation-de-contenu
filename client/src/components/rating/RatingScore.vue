@@ -63,7 +63,6 @@ export default {
 	},
 	methods: {
 		openTab() {
-			console.log("openTab");
 			this.showModal = true;
 		},
 		async setNewScore(score) {

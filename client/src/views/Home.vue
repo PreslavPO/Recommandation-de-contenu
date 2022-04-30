@@ -7,7 +7,7 @@
 		<h3>Might interest you</h3>
 		<ul class="interest-list">
 			<li class="interest-item" v-for="i in 7" :key="i">
-				<SmallCard />
+				<!--<SmallCard />-->
 			</li>
 		</ul>
 	</div>

@@ -59,7 +59,7 @@ class User:
 		req = request.get_json(force=True)
 
 		# Search user with email provided
-		user = db.users.find_one({ "email": req["email"] })
+		user = db.users.find_one({ "email": req["email"] }, {"_id": 1, "email": 1, "username": 1, "password": 1})
 
 		# Generate salt
 		if user and bcrypt.checkpw(req["password"].encode("utf-8"), user["password"]):

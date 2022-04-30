@@ -54,7 +54,7 @@ export default {
 	},
 	methods: {
 		async logout() {
-			this.$store.dispatch("signout");
+			this.$store.dispatch("logout");
 		}
 	}
 }

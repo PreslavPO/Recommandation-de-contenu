@@ -30,6 +30,7 @@
 				<RatingStars
 					:score="rating"
 					@set-score="setNewScore"
+					@delete-score="deleteScore"
 				/>
 			</template>
 		</Modal>
@@ -72,7 +73,15 @@ export default {
 					this.rating = score;
 				})
 				.catch((err) => console.error(err));
-		}
+		},
+		async deleteScore() {
+			this.$store.dispatch("deleteRating", this.$props.movieId)
+				.then((res) => {
+					console.log(res.message);
+					this.rating = 0;
+				})
+				.catch((err) => console.error(err));
+		},
 	},
 	created() {
 		this.showClickRating = !this.isGlobal && this.$store.state.isLogged;

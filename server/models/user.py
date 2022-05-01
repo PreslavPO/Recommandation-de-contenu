@@ -108,6 +108,20 @@ class User:
 			})
 
 		return { "message": "Movie score updated" }, 200
+	
+	def delete_rating(self, movieId):
+		userId = request.args.get("userId")
+
+		res = db.users.update_one(
+			{ "_id": userId },
+			{ "$pull": { "ratings": { "movieId": movieId } } }
+		);
+		if (res.matched_count == 0):
+			return { "message" : "User not found" }, 404
+		if (res.modified_count == 0):
+			return { "message" : "Movie is not rated by this user" }, 404
+		
+		return { "message" : "Rating has been remove" }, 200
 
 	def get_movies(self):
 		userId = request.args.get("userId")

@@ -36,6 +36,9 @@ class UserRating(Resource):
 
 	def post(self, movieId):
 		return User().set_rating(movieId)
+	
+	def delete(self, movieId):
+		return User().delete_rating(movieId)
 
 class UserRatingMovies(Resource):
 	method_decorators = [login_required]

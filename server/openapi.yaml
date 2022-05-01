@@ -558,6 +558,40 @@ paths:
           $ref: "#/components/responses/Error-401"
         "401":
           $ref: "#/components/responses/Error-401"
+    delete:
+      tags:
+        - user
+      summary: Delete user rating
+      description: Delete already existing user rating of a movie
+      operationId: DELETE_user-rating-movieId
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: userId
+          in: query
+          description: "Id of the user to delete data from"
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/Error-401"
+        "401":
+          $ref: "#/components/responses/Error-401"
+        "404":
+          $ref: "#/components/responses/Error-401"
   "/user/rating":
     get:
       tags:

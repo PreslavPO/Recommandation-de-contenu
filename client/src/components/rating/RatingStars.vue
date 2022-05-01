@@ -1,28 +1,34 @@
 <template>
-	<div
-		class="rating-stars"
-		@click="$emit('setScore', this.scoreHover)"
-		@mouseleave="onMouseLeave"
-		@mouseover="onMouseOver"
-		ref="ratingStars"
-	>
-		<div class="empty-stars">
-			<span v-for="i in 5" :key="i" class="star" :style="{'width': smallStar ? '30px' : ''}">
-				<StarEmptyIcon />
-			</span>
-		</div>
+	<div class="rating-stars-container">
 		<div
-			class="filled-stars"
-			:style="{
-				'width': 
-					(percentageSize > 0 ? percentageSize : (score > 0 ? getPercentageByScore(score) : 0)) + '%'
-			}"
+			class="rating-stars"
+			@click="$emit('setScore', this.scoreHover)"
+			@mouseleave="onMouseLeave"
+			@mouseover="onMouseOver"
+			ref="ratingStars"
 		>
-			<span v-for="i in 5" :key="i" class="star" :style="{'width': smallStar ? '30px' : ''}">
-				<StarFillIcon />
-			</span>
+			<div class="empty-stars">
+				<span v-for="i in 5" :key="i" class="star" :style="{'width': smallStar ? '30px' : ''}">
+					<StarEmptyIcon />
+				</span>
+			</div>
+			<div
+				class="filled-stars"
+				:style="{
+					'width': 
+						(percentageSize > 0 ? percentageSize : (score > 0 ? getPercentageByScore(score) : 0)) + '%'
+				}"
+			>
+				<span v-for="i in 5" :key="i" class="star" :style="{'width': smallStar ? '30px' : ''}">
+					<StarFillIcon />
+				</span>
+			</div>
 		</div>
+		<button v-if="!smallStar" class="score__delete-btn" @click="$emit('deleteScore')">
+			<CloseIcon />
+		</button>
 	</div>
+
 	<p v-if="!smallStar">
 		{{ [
 		"",
@@ -44,11 +50,13 @@
 <script>
 import StarFillIcon from "@/components/icons/StarFillIcon.vue";
 import StarEmptyIcon from "@/components/icons/StarEmptyIcon.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 
 export default {
 	components: {
 		StarFillIcon,
 		StarEmptyIcon,
+		CloseIcon,
 	},
 	props: {
 		score: Number,
@@ -98,6 +106,10 @@ export default {
 <style lang="scss">
 @import "@/assets/variables.scss";
 
+.rating-stars-container {
+	display: flex;
+	align-items: center;
+}
 .rating-stars {
 	cursor: pointer;
 	position: relative;
@@ -124,6 +136,25 @@ export default {
 			width: 100%;
 			height: 100%;
 		}
+	}
+}
+.score__delete-btn {
+	cursor: pointer;
+	display: flex;
+	margin-left: 8px;
+	padding: 8px;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	border: none;
+	background-color: $font2-color;
+	color: $back3-color;
+	&:hover {
+		background-color: $main-color;
+	}
+	svg {
+		width: 100%;
+		height: 100%;
 	}
 }
 </style>

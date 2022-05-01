@@ -52,6 +52,12 @@ export default createStore({
 				axios.post(`/user/rating/${movieId}?userId=${context.state.user._id}`, { score })
 			);
 		},
+		deleteRating(context, movieId) {
+			return context.dispatch(
+				"requestWithCredentials",
+				axios.delete(`/user/rating/${movieId}?userId=${context.state.user._id}`)
+			);
+		},
 		getListRating(context, { page, sort_by }) {
 			if (!page) page = 1
 			if (!sort_by) sort_by = "last_rated"

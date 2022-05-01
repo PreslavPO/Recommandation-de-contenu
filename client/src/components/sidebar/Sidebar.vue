@@ -3,9 +3,8 @@
 		<ul class="menu">
 			<SidebarLink to="/" text="Home"><HomeIcon /></SidebarLink>
 			<SidebarLink to="/top" text="Top rating"><TicketIcon /></SidebarLink>
-			<SidebarLink to="/recommended" text="Recommended for you"><CandlestickIcon /></SidebarLink>
 			<hr />
-			<SidebarLink to="/settings" text="Settings"><GearIcon /></SidebarLink>
+			<SidebarLink to="/recommended" text="Recommended for you"><CandlestickIcon /></SidebarLink>
 		</ul>
 		<div class="bottom">
 			<SidebarLink to="/profile" :text="$store.state.user.username || 'Login or Sign Up'"><UserBoxIcon /></SidebarLink>

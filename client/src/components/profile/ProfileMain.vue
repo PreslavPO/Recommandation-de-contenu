@@ -67,7 +67,6 @@ export default {
 	},
 	async mounted() {
 		let informationUser = await this.$store.dispatch("getInformation");
-		console.log(informationUser);
 		informationUser.ratings.forEach((elt) => {
 			this.nbMovieRated++;
 			if (elt.rating >= 5) this.nbRatedOver5++;

@@ -4,12 +4,6 @@
 			<img alt="TheMoviesualizer logo" src="../assets/logo.svg">
 			<h1>The<span>Movie</span>sualizer</h1>
 		</div>
-		<h3>Might interest you</h3>
-		<ul class="interest-list">
-			<li class="interest-item" v-for="i in 7" :key="i">
-				<!--<SmallCard />-->
-			</li>
-		</ul>
 	</div>
 </template>
 
@@ -30,7 +24,8 @@ export default {
 @import "../assets/variables.scss";
 
 .home {
-	margin: $margin-page;
+	display: flex;
+	height: 100%;
 	h3 {
 		margin: 0;
 	}
@@ -40,7 +35,6 @@ export default {
 	display: flex;
 	flex-direction: column;
 	margin: auto;
-	margin-top: 25px;
 	width: fit-content;
 	img {
 		margin-left: 78px;

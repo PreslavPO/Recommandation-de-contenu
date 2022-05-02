@@ -1,5 +1,7 @@
 # Recommandation de contenus 🎬
-🎬 Application pour recommander des musiques en fonction des préférences de l'utilisateur à partir de celles des autres utilisateurs.
+🎬 Application pour recommander des films avec différents algorithmes.
+
+![Miniature recommandation de contenus](https://imgur.com/a/MiVACDt)
 
 Lien de la base de données utilisées : https://www.kaggle.com/rounakbanik/the-movies-dataset
 

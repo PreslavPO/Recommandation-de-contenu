@@ -1,7 +1,11 @@
 # Recommandation de contenus 🎬
 🎬 Application pour recommander des films avec différents algorithmes.
 
-![Miniature recommandation de contenus](https://imgur.com/a/MiVACDt)
+<br/>
+<div align="center">
+	<img src="https://i.imgur.com/EK3AOPf.png" width="700" alt="Miniature recommandation de contenus">
+</div>
+<br/>
 
 Lien de la base de données utilisées : https://www.kaggle.com/rounakbanik/the-movies-dataset
 

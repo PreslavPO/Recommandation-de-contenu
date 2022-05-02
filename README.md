@@ -9,17 +9,31 @@ Lien de la base de données utilisées : https://www.kaggle.com/rounakbanik/the-
 	* [Pandas](https://pandas.pydata.org) : Bibliothèque pour manipuler et analyser des données
 	* [venv](https://docs.python.org/fr/3/library/venv.html) : Module python pour créer un environnement virtuel
 * Javascript :
-	* [Electron](https://www.electronjs.org) : Environnement pour développer des applications de bureau en Javascript (basé sur Chromium). Installer avec Vue CLI
+	* [Electron](https://www.electronjs.org) : Environnement pour développer des applications de bureau en Javascript (basé sur Chromium). Installé avec Vue CLI
 	* [Vue](https://vuejs.org) : Framework pour gérer l'interface en Javascript
 * [Sass](https://sass-lang.com) : Préprocesseur pour css
 
 
 ## Installation
 
+### Prérequis
+
+Assurer vous d'avoir tous les prérequis.
+ - Windows
+ - Etre connecté à internet (Avec une connexion qui ne bloque pas les requêtes : l'université les bloque)
+ - Python avec version <= 3.7, Voir détails en [bas de page](#python) si ce n'est pas le cas
+   - Vérifiez avec la commande ```python --version```
+ - Microsoft Visual C++ 14.0, voir en [bas de page](#c) pour plus d'informations
+ - NodeJS (npm) : Disponible [ici](https://nodejs.org)
+
 ### Partie serveur
 Situez vous dans le dossier `server`
 
-Exécutez les lignes de commande suivantes (Effectif sur Windows, cela diffère sur Linux) :
+Téléchargez les fichiers non présent sur github à [cette adresse](https://1fichier.com/?8stcfjpgvbsurfe58swj) (Variables d'environnement et fichiers csv).
+
+Mettez le fichier `.env` et le dossier `data` à la base du dossier `server`.
+
+Une fois cela fait, exécutez les lignes de commande suivantes (En étant bien situé dans le dossier server) :
 ```
       > python -m venv venv
       > .\venv\Scripts\activate
@@ -27,13 +41,13 @@ Exécutez les lignes de commande suivantes (Effectif sur Windows, cela diffère 
 ```
 Commande pour démarrer le serveur :
 ```
-      > .\venv\Scripts\activate
 (env) > python server.py
 ```
 *(env) indique que l'on se situe dans l'environnement virtuel*
 
 
-L'adresse du serveur est `localhost:5000`
+L'adresse du serveur est `localhost:5000`.
+Vous pouvez par exemple taper `localhost:5000/docs` pour voir la documentation de l'API.
 
 ### Partie client
 Situez vous dans le dossier `client`
@@ -43,32 +57,27 @@ Exécutez la commande suivante :
 npm install
 ```
 
+Pour lancer l'application avec electron :
+```
+npm run electron:serve
+```
 Pour lancer l'application sur navigateur :
 ```
 npm run serve
 ```
 L'adresse du client est `localhost:8080`
 
-Pour lancer l'application avec electron :
-```
-npm run electron:serve
-```
+## Détails d'installation
 
-### Import data in mongoDB
+Toutes les informations supplémentaires pour les dépendances non installées.
+### Python
+Pour installer python 3.7.9 pour windows 64 bit, télécharger [ici](https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64-webinstall.exe)
+Si vous avez un système différent, téléchargez le [ici](https://www.python.org/downloads/windows/)
 
-Go to `./server/dataToDb` directory and install dependencies :
-```bash
-npm install
-```
-
-Create a database `<NameDB>` and a collection `movies` beforehand, the collection name is `movies`. Replace `<NameDB>`, `<Username>`, `<Password>` in the commands below
-
-Import csv to mongoDB :
+Ensuite, suivez les instructions de l'installer, vous pouvez mettre python dans le PATH, mais si vous avez déjà une configuration, vous pouvez lancer une commande python en prenant le chemin du fichier où il est installé : 
 ```properties
-mongoimport --db <NameDB> --collection movies --type csv --file ./server/data/movies_metadata.csv --headerline --uri mongodb+srv://<Username>:<Password>@cluster0.xyttr.mongodb.net/
+> C:\Users\<Nom>\AppData\Local\Programs\Python\Python37\python.exe <Commande>
 ```
 
-Convert mongoDB data :
-```properties
-mongosh mongodb+srv://<Username>:<Password>@cluster0.xyttr.mongodb.net/<NameDB> mongodb-import.js
-```
+### C++
+Il faut avoir C++ d'installer sur sa machine pour permettre à `scikit-surprise` de s'intaller. Vous pouvez l'installer avec [Build Tools](https://visualstudio.microsoft.com/fr/visual-cpp-build-tools/). Selectionnez bien `Développement Desktop en C++` lors de l'installation.

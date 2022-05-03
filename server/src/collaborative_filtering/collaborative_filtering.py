@@ -1,7 +1,7 @@
 from collections import defaultdict
 import pandas as pd
 import numpy as np
-from surprise import KNNWithMeans, Reader, Dataset, accuracy
+from surprise import KNNWithMeans, Reader, Dataset, accuracy, SVD
 from surprise.model_selection import KFold
 from surprise.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
@@ -13,6 +13,9 @@ import matplotlib.pyplot as plt
 movies_metadata = pd.read_csv("../../data/movies_metadata.csv", low_memory=False)
 ratings = pd.read_csv("../../data/ratings_small.csv", low_memory=False)
 links = pd.read_csv("../../data/links.csv", low_memory=False)
+
+#Réduit la taille des données pour que l'auc aille plus vite
+ratings = ratings[:int(len(ratings)/200)]
 
 # Pour faire du collaborative filtering, il y a 3 étapes :
 # 1. Trouver quels utilisateurs sont similaires entre eux (ou quels films si on fait du item-based)
@@ -34,7 +37,10 @@ sim_options = {
 # KNNWithMeans prend en compte la note moyenne de chaque utilisateur
 # car il y a des utilisateurs qui sont plus sévères sur leurs notes et on prend ça en compte pour calculer la similarité
 # Il y a d'autres algos de prédiction comme le SVD par exemple
-algo = KNNWithMeans(sim_options=sim_options)
+#algo = KNNWithMeans(sim_options=sim_options)
+
+#SVD
+algo = SVD()
 
 # Reader lit les données
 reader = Reader()
@@ -59,15 +65,15 @@ algo.fit(trainset)
 
 # trainset.build_anti_testset() renvoie une liste de tuples qui contient tous les films qui n'ont pas été
 # notés pour chaque user, sous la forme : (user_id, film_id, fill)
-#testset = trainset.build_anti_testset()
+testset = trainset.build_anti_testset()
 
 # algo.test(testset) estime avec l'algorithme toutes les notes vides du testset
 # prend beaucoup de temps
-#predictions = algo.test(testset)
+predictions = algo.test(testset)
 
 # Enregistre avec pickle le modèle
-with open('../../data/model.pkl', 'wb') as f:
-    pickle.dump(algo, f)
+#with open('../../data/model.pkl', 'wb') as f:
+#    pickle.dump(algo, f)
 
 # Pour récupérer le modèle depuis le fichier model.pkl :
 # with open('../../Data/model.pkl', 'rb') as f:
@@ -165,8 +171,8 @@ print(recup_titres(predicted))
 # Ici on avait le meilleur score pour name = msd, min_support = 3 et user_based = True
 
 
-with open('../../data/pred.pkl', 'rb') as f:
-    predictions = pickle.load(f)
+#with open('../../data/pred.pkl', 'rb') as f:
+#    predictions = pickle.load(f)
 
 
 #return une liste avec les films que 'usr' à noté
@@ -178,9 +184,19 @@ def get_films_by_user(usr):
         if ratings['userId'][ind] == usr:
             user_to_films.append(ratings['movieId'][ind])
     return user_to_films
-film_listenned = get_films_by_user(1)
-print(film_listenned)
+films_viewed = get_films_by_user(1)
+print(films_viewed)
 
+#Retourne les notes des films
+def get_films_by_user2(usr):
+
+    user_to_films = []
+
+    for ind in ratings.index:
+        if ratings['userId'][ind] == usr:
+            user_to_films.append(ratings['rating'][ind])
+    return user_to_films
+ratings_films = get_films_by_user2(1)
 
 #initialisation des tab
 y_pred = []
@@ -205,10 +221,14 @@ df = df.sort_values('note', ascending=False)
 
 #on remplie y_pred et y_true
 for index, row in df.iterrows():
+   test = False
    y_pred.append(row['note'])
-   if int(row['note']) >= 4 and int(row['film']) in film_listenned:
+   for i in range(len(films_viewed)):
+     if(int(row['film']) == films_viewed[i] and ratings_films[i] >= 4 and float(row['note']) >= 4):
        y_true.append(1)
-   else:
+       test = True
+       break
+     if(test == False):
        y_true.append(0)
 
 
@@ -229,7 +249,27 @@ def compute_roc(y_true, y_pred, plot=True):
         plt.ylabel("TPR")
         plt.show()
 
-    return fpr, tpr, auc_score
+    return auc_score
 
+#Pour avoir un auc précis, on calcule l'auc pour 10 utilisateurs et on récupère la moyenne
+tab_moy = []
+for i in range(1,10):
+  films_viewed = get_films_by_user(i)
+  ratings_films = get_films_by_user2(i)
+  y_pred = []
+  y_true = []
 
-compute_roc(y_true,y_pred)
+  #on remplie y_pred et y_true
+  for index, row in df.iterrows():
+   test = False
+   y_pred.append(row['note'])
+   for i in range(len(films_viewed)):
+     if(int(row['film']) == films_viewed[i] and ratings_films[i] >= 4 and float(row['note']) >= 4):
+       y_true.append(1)
+       test = True
+       break
+   if(test == False):
+     y_true.append(0)
+  tab_moy.append(compute_roc(y_true,y_pred))
+print(np.nanmean(tab_moy))
+
